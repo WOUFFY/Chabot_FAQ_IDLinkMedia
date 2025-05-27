@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="https://idlinkmedia.com/images/ico.png" type="image/png">
+    <link rel="canonical" href="https://idlinkmedia.com">
+    <link rel="publisher" href="ggembulls@gmail.com">
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="author" content="barep@idlinkmedia.com">
+    <meta name="title" content="ID Link Media" />
+    <meta name="description" content="One Stop Internet & Application" />
+    <meta property="og:url" content="http://idlinkmedia.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+    <title>ID Link Media</title>
+
+    <!-- Import Font Awesome Icon Font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+
+    <!--Import materialize.css-->
+    <link rel="stylesheet" type="text/css" href="static/css/materialize.min.css" />
+
+    <!--Main css-->
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/superfish.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/menus.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/camera.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/landmark.css" />
+    <link rel="stylesheet" type="text/css" href="https://idlinkmedia.com/assets/css/darwis/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="https://idlinkmedia.com/assets/css/darwis/all.css">
+    <link rel="stylesheet" type="text/css" href="https://idlinkmedia.com/assets/css/darwis/custom.css">
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/style.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/thumbnail_slider/style.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/thumbnail_slider/elastislide.css" />
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/lightgallery/dist/css/lightgallery.css">
+    <link rel="stylesheet" href="https://idlinkmedia.com/assets/css/barep/responsive.css" />
+
+    <script src="https://idlinkmedia.com/assets/js/jquery-1.11.1.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/jquery-migrate-1.2.1.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/jquery.tmpl.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/jquery.elastislide.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/barep/device.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/darwis/popper.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/darwis/bootstrap.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/barep/camera.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/thumbnail_slider/gallery.js"></script>
+    <script src="https://idlinkmedia.com/assets/js/barep/pus.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500&display=swap" rel="stylesheet" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+
+
+    <style type="text/css">
+    </style>
+
+    <!-- <script id="img-wrapper-tmpl" type="text/x-jquery-tmpl">
+        <div class="rg-image-wrapper">
+            <div class="rg-image"></div>
+            <div class="rg-caption-wrapper" id="Gombals">
+                <div class="rg-caption" style="display:none;">
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </script> -->
+</head>
+
+<body>
+    <div class="container-fluid" id="body_container">
+        <div class="pom_body">
+            <script>
+                $(document).ready(function () {
+
+                    $('#search').keydown(function (event) {
+                        if (event.keyCode == 13) {
+                            //$('#custom-search-form').form.submit();
+                            submitbutton('Search', 'searchForm');
+                            return false;
+                        }
+                    });
+
+                });
+            </script>
+            <header>
+                <div class="head_main">
+                    <div class="pom-spacer">&nbsp;</div>
+                    <div class="pom-search-form">
+                        <form id="custom-search-form" name="searchForm" action="" method="post">
+                            <input type="hidden" name="task" />
+                            <div class="searchbar">
+                                <a href="javascript:submitbutton('Search','searchForm');" class="search_icon"><i
+                                        class="fas fa-search"></i></a>
+                                <input class="search_input" type="text" name="search" id="search" placeholder=""
+                                    autocomplete="off">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="pom_sosmed">
+                        <a class="head_fa mr-1 p-0" href="" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a class="head_fa mx-1 p-0" href="" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a class="head_fa mx-1" href="" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a class="head_fa mx-1" href="" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a class="head_fa mx-1"
+                            href="https://api.whatsapp.com/send?phone=+62 81283270843&text=Halo%20saya%20ingin%20bertanya&source=&data="
+                            target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </header>
+            <menus>
+                <div id="stuck_container" class="stuck_container">
+                    <nav class="nav">
+                        <!--div class="container"-->
+                        <div class="Flex">
+                            <div class="Left-Side">
+                                <img src="https://idlinkmedia.com/images/Logo_Up.jpg" class="Menu_Img_Left" />
+                            </div>
+                            <div class="Menu-Side">
+                                <ul class="sf-menu" data-type="navbar">
+                                    <li class="LstItm"><a href="https://idlinkmedia.com/id/IN/0/0.html"
+                                            target="_self">HOME</a></li>
+                                    <li class="LstItm"><a
+                                            href="https://idlinkmedia.com/id/MM/20220112153418/0.html">ABOUT US</a></li>
+                                    <li class="LstItm"><a
+                                            href="https://idlinkmedia.com/id/MM/20211025114317/0.html">PRODUCTS</a></li>
+                                    <li class="LstItm"><a
+                                            href="https://idlinkmedia.com/id/MM/20220112153516/0.html">CONTACT US</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="Logo-Side">
+                                <img src="https://idlinkmedia.com/images/Logo_Halo.jpg" class="Menu_Img_Right" />
+                            </div>
+                        </div>
+                        <!--/div-->
+                    </nav>
+                </div>
+            </menus>
+            <div class="GeoHeader">
+                <img src="https://idlinkmedia.com/images/android_head.png" class="GeoHeader_img" />
+            </div>
+            <script>
+                jQuery(document).ready(function () {
+                    var sw = screen.width;
+                    var camcontent;
+                    if (sw > 760) {
+                        camcontent = '<div data-src="https://idlinkmedia.com/unggah/b9c5f2cf9a9d9fb5d2294cd5e7f13c1001.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">REGISTER YOUR DOMAIN</div><div class="CameraSubTitle">Secure your domain with ours. Make sure you got online and searchable</div></div></div><div data-src="https://idlinkmedia.com/unggah/26ad1e11b58e744e4bc911fec67c802602.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">GO ONLINE</div><div class="CameraSubTitle">Host your website and make your business go global</div></div></div><div data-src="https://idlinkmedia.com/unggah/55009c968965ff89dc0c7b7c30bd9f0b03.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">WE COVER YOU</div><div class="CameraSubTitle">Enjoy our professional support and never worried again</div></div></div><div data-src="https://idlinkmedia.com/unggah/3cabefab3f9b92e839d57456b6fec72c04.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">APP DEVELOPMENT</div><div class="CameraSubTitle">Need to develop new app or upgrade your app? We can provide to you</div></div></div>';
+                    } else {
+                        camcontent = '<div data-src="https://idlinkmedia.com/unggah/c13847c398f2208d758fc34947d8486c01P.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">REGISTER YOUR DOMAIN</div><div class="CameraSubTitle">Secure your domain with ours. Make sure you got online and searchable</div></div></div><div data-src="https://idlinkmedia.com/unggah/b25b13b90279c13f005f0ad9a6ed13b002P.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">GO ONLINE</div><div class="CameraSubTitle">Host your website and make your business go global</div></div></div><div data-src="https://idlinkmedia.com/unggah/9681495a2ee517f9afd4bd639285503203P.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">WE COVER YOU</div><div class="CameraSubTitle">Enjoy our professional support and never worried again</div></div></div><div data-src="https://idlinkmedia.com/unggah/15bf805fa2043f8bcf4b0df2ccd6c4b004P.jpg"><div class="camera_caption fadeIn CameraTitleBackground"><div class="CameraTitle">APP DEVELOPMENT</div><div class="CameraSubTitle">Need to develop new app or upgrade your app? We can provide to you</div></div></div>';
+                    };
+                    $('#camera').append(camcontent);
+                });
+            </script>
+            
+            <div id="landmark">
+                <div class="tengah">
+                    <div class="camera_container">
+                        <div id="camera" class="camera_wrap"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pom_main">
+                <div class="brp_spacing py-5" style="background-color:#fff;">
+                    <div class="upper_section container-fluid">
+                        <div class="container">
+                            <div class="row">
+                                <div class="nwfr_highlightbox">
+                                    <div class="nwfr_highlightsubbox01">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/domain.png" alt="Alur Layanan"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Domain Registration</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Your domain search should not just return a
+                                                list of names. We curate domain results and provide recommendations for
+                                                memorable domain names, whether it is for business or personal use.
+                                            </font>
+                                        </div>
+                                    </div>
+                                    <div class="nwfr_highlightsubbox02">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/hosting.png" alt="Jadwal Layanan"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Hosting Server</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Whether you are looking for a personal
+                                                website hosting plan or a business website hosting plan, our powerful
+                                                website hosting services will help you achieve your overall website
+                                                goals</font>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="nwfr_highlightbox">
+                                    <div class="nwfr_highlightsubbox03">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/email.png" alt="Form Informasi"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Email Services</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Delivering your transactional and marketing
+                                                email. Use our mail service and send with confidence. We have domain for
+                                                your personal email.</font>
+                                        </div>
+                                    </div>
+                                    <div class="nwfr_highlightsubbox03">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/colo.png" alt="Form Informasi"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Co Location Server</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Mutiple data center, local loop: IDC Duren
+                                                Tiga, Cyber 1 Building 1st & 3A floor, NTT Nex Center. Tier 3 design
+                                                data center colocation sites provide world-class, secure and robust
+                                                facilities with high-bandwidth internet access for corporate customers.
+                                            </font>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="nwfr_highlightbox">
+                                    <div class="nwfr_highlightsubbox03">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/apps.png" alt="Form Informasi"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Web and Application</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Every business needs to be online. Stand
+                                                out from the competition and make your brand look its best with stunning
+                                                web page design. You'll get thoughtful, effective web page designs
+                                                created by professionals.</font>
+                                        </div>
+                                    </div>
+                                    <div class="nwfr_highlightsubbox03">
+                                        <div class="nwfr_highlightitem">
+                                            <img src="https://idlinkmedia.com/images/internet.png" alt="Form Informasi"
+                                                class="frhighlight_img" />
+                                        </div>
+                                        <div class="nwfr_highlightitem">
+                                            <font class="nwfr_highloghttxt">Dedicated Internet</font>
+                                        </div>
+                                        <div class="nwfr_highlightitem2">
+                                            <font class="nwfr_highloghttxt2">Providing high performance dedicated
+                                                internet through our reliable connectivity to global network, supported
+                                                with our excellent customer service and monitoring team.</font>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="brp_spacing_footer foot_main bg-pom-footer py-3">
+                    <div class="footer_container">
+                        <div class="row">
+                            <div class="pl-4 mt-3">
+                                <table class="table table-borderless foot_link">
+                                    <tbody>
+                                        <tr>
+                                            <td><a class="text-white" href="https://idlinkmedia.com/id/IN/0/0.html"
+                                                    target="_self">Home</a></td>
+                                            <td><a class="text-white"
+                                                    href="https://idlinkmedia.com/id/MM/20211025114317/0.html">Products</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a class="text-white"
+                                                    href="https://idlinkmedia.com/id/MM/20220112153418/0.html">About Us</a></td>
+                                            <td><a class="text-white"
+                                                    href="https://idlinkmedia.com/id/MM/20220112153516/0.html">ContactUs</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <a class="head_fa mx-1 footer_sosmed_icon" href="" target="_blank"> <i
+                                        class="fab fa-twitter"></i> </a>
+                                <a class="head_fa mx-1 footer_sosmed_icon" href="" target="_blank"> <i
+                                        class="fab fa-facebook-f"></i>
+                                </a> <a class="head_fa mx-1 footer_sosmed_icon" href="" target="_blank"> <i
+                                        class="fab fa-instagram"></i> </a>
+                                <a class="head_fa mx-1 footer_sosmed_icon" href="" target="_blank"> <i
+                                        class="fab fa-youtube"></i> </a>
+                                <a class="head_fa mx-1 footer_sosmed_icon"
+                                    href="https://api.whatsapp.com/send?phone=+62 81283270843&text=Halo%20ULPK%20BPOM&source=&data="
+                                    target="_blank"> <i class="fab fa-whatsapp"></i> </a>
+                            </div>
+
+                            <div class="col-sm-1 brp_fl_bttnBg">&nbsp;</div>
+
+                            <div class="col-sm mt-3"> <span class="foot_title pb-3">Hubungi Kami</span><br>
+                                <br>
+                                <table class="table table-borderless foot_link">
+                                    <tbody>
+                                        <tr>
+                                            <td><a class="pr-3 foot_title"><i class="fab fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td>+62 81283270843</td>
+                                        </tr>
+                                        <tr>
+                                            <td><a class="pr-3 foot_title"><i class="fas fa-mobile-alt fa-lg"></i></a>
+                                            </td>
+                                            <td>+62 81283270843</td>
+                                        </tr>
+                                        <tr>
+                                            <td><a class="pr-3 foot_title"><i
+                                                        class="fas fa-map-marker-alt fa-lg"></i></a> </td>
+                                            <td>Gedung IDC 3D Duren Tiga, Lt 1-3, Jl. Duren Tiga Raya No 7</td>
+                                        </tr>
+                                        <tr>
+                                            <td><a class="pr-3 foot_title"><i class="fas fa-envelope fa-lg"></i></a>
+                                            </td>
+                                            <td>
+                                                <a href="mailto:info@idlinkmedia.com?subject=Email from ULPK BPOM Website"
+                                                    style="color:#FFFFFF;">info@idlinkmedia.com</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-1 brp_fl_bttnBg">&nbsp;</div>
+                            <div class="col-sm  mt-3 px-0"> <!--span class="foot_title px-3">Google Map</span><br>
+                                <br-->
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.077595992484!2d106.83047481497299!3d-6.253506962969482!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3cc4231a211%3A0xefc8bf84d953496b!2sIDC%203D!5e0!3m2!1sen!2sid!4v1643017568328!5m2!1sen!2sid"
+                                    class="Brp_Iframe_Footer" frameborder="0" style="border:0;"
+                                    allowfullscreen="">
+                                </iframe>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="foot_copyright text-center py-3 mt-2 text-uppercase ">&copy;2019 - ID Link
+                                    Media</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- chatbot  -->
+    <div class="container_chatbot">
+        <!--chatbot widget -->
+        <div class="widget">
+            <div class="chat_header">
+                <!--Add the name of the bot here -->
+                <span class="chat_header_title">ID Link Media</span>
+                <span class="dropdown-trigger" href="#" data-target="dropdown1">
+                    <i class="material-icons"> more_vert </i>
+                </span>
+
+                <!-- Dropdown menu-->
+                <ul id="dropdown1" class="dropdown-content">
+                    <li><a href="#" id="clear">Clear</a></li>
+                    <li><a href="#" id="restart">Restart</a></li>
+                    <li><a href="#" id="close">Close</a></li>
+                </ul>
+            </div>
+
+            <!--Chatbot contents goes here -->
+            <div class="chats" id="chats">
+                <div class="clearfix"></div>
+            </div>
+
+            <!--keypad for user to type the message -->
+            <div class="keypad">
+                <textarea id="userInput" placeholder="Type a message..." class="usrInput"></textarea>
+                <div id="sendButton">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <!--bot profile-->
+        <div class="profile_div" id="profile_div">
+            <img class="imgProfile" src="static/img/idlink.jpg" />
+        </div>
+
+        <!-- Bot pop-up intro -->
+        <!-- <div class="tap-target" data-target="profile_div">
+            <div class="tap-target-content">
+                <h5 class="white-text">Hey there 👋</h5>
+                <p class="white-text">
+                    I can help you get started with Rasa and answer your technical
+                    questions.
+                </p>
+            </div>
+        </div> -->
+    </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="static/js/lib/materialize.min.js"></script>
+    <script src="static/js/lib/uuid.min.js"></script>
+    <!--Main Script -->
+    <script type="text/javascript" src="static/js/script.js"></script>
+
+    <!--Chart.js Script -->
+    <script type="text/javascript" src="static/js/lib/chart.min.js"></script>
+    <script type="text/javascript" src="static/js/lib/showdown.min.js"></script>
+
+    <script src="https://idlinkmedia.com/assets/lightgallery/lib/picturefill.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/lightgallery/dist/js/lightgallery-all.min.js"></script>
+    <script src="https://idlinkmedia.com/assets/lightgallery/lib/jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" base-url="https://idlinkmedia.com/assets/js/barep" src="https://idlinkmedia.com/assets/js/barep/script.js"></script>
+</body>
+</html>

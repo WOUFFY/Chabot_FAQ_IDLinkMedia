@@ -1,0 +1,60 @@
+version: '3.1'
+stories:
+- story: percabangan pertanyaan acak 2
+  steps:
+  - intent: tanya_metode_pembayaran
+  - action: utter_metode_pembayaran
+  - intent: tanya_issue_dalam_aplikasi
+  - action: utter_issue_dalam_aplikasi
+- story: durasi kontrak berlangganan dan metode pembayaran
+  steps:
+  - intent: tanya_durasi_kontrak_berlangganan
+  - action: utter_durasi_kontrak_berlangganan
+  - intent: tanya_metode_pembayaran
+  - action: utter_metode_pembayaran
+  - intent: tanya_invoice_pdf_via_wa
+  - action: utter_invoice_pdf_via_wa
+- story: percabangan pertanyaan acak 3
+  steps:
+  - intent: tanya_harga_pembuatan_website
+  - action: utter_harga_pembuatan_website
+  - intent: tanya_benefit_jasa_pt_mti
+  - action: utter_benefit_jasa_pt_mti
+- story: harga pembuatan aplikasi website maupun mobile
+  steps:
+  - intent: tanya_harga_pembuatan_website
+  - action: utter_harga_pembuatan_website
+  - intent: tanya_harga_pembuatan_aplikasi_android
+  - action: utter_harga_pembuatan_aplikasi_android
+  - intent: tanya_harga_pembuatan_aplikasi_ios
+  - action: utter_harga_pembuatan_aplikasi_ios
+- story: layanan yang tersedia serta benefit
+  steps:
+  - intent: tanya_layanan_pt_mti
+  - action: utter_layanan_pt_mti
+  - intent: tanya_issue_dalam_aplikasi
+  - action: utter_issue_dalam_aplikasi
+  - intent: tanya_benefit_jasa_pt_mti
+  - action: utter_benefit_jasa_pt_mti
+- story: sapa pengguna
+  steps:
+  - intent: greet
+  - action: utter_greet
+- story: customer care dan pelatihan
+  steps:
+  - intent: tanya_issue_dalam_aplikasi
+  - action: utter_issue_dalam_aplikasi
+  - intent: tanya_pelatihan_aplikasi_jadi
+  - action: utter_pelatihan_aplikasi_jadi
+- story: pertanyaan teknis
+  steps:
+  - intent: tanya_kompatibilitas_perangkat
+  - action: utter_kompatibilitas_perangkat
+  - intent: tanya_konfigurasi_email_perangkat_berbeda
+  - action: utter_konfigurasi_email_perangkat_berbeda
+  - intent: tanya_aktif_tidak_nomor_wa
+  - action: utter_aktif_tidak_nomor_wa
+  - intent: tanya_harga_upgrade_memori
+  - action: utter_harga_upgrade_memori
+  - intent: tanya_harga_laptop_anak
+  - action: utter_harga_laptop_anak

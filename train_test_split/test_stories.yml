@@ -1,0 +1,11 @@
+stories:
+- story: percabangan pertanyaan acak 1
+  steps:
+  - intent: tanya_layanan_pt_mti
+  - action: utter_layanan_pt_mti
+  - intent: tanya_konfigurasi_email_perangkat_berbeda
+  - action: utter_konfigurasi_email_perangkat_berbeda
+- story: fallback_scenario
+  steps:
+  - intent: nlu_fallback
+  - action: utter_fallback

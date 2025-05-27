@@ -1,0 +1,87 @@
+version: "3.1"
+
+rules:
+  - rule: sapa pengguna
+    steps:
+      - intent: greet
+      - action: utter_greet
+
+  - rule: Menjawab pertanyaan harga pembuatan website
+    steps:
+      - intent: tanya_harga_pembuatan_website
+      - action: utter_harga_pembuatan_website
+
+  - rule: Menjawab pertanyaan harga pembuatan aplikasi android
+    steps:
+      - intent: tanya_harga_pembuatan_aplikasi_android
+      - action: utter_harga_pembuatan_aplikasi_android
+
+  - rule: Menjawab pertanyaan harga pembuatan aplikasi ios
+    steps:
+      - intent: tanya_harga_pembuatan_aplikasi_ios
+      - action: utter_harga_pembuatan_aplikasi_ios
+
+  - rule: Menjawab pertanyaan tentang layanan PT MTI
+    steps:
+      - intent: tanya_layanan_pt_mti
+      - action: utter_layanan_pt_mti
+
+  - rule: Menjawab pertanyaan pelatihan untuk aplikasi jadi
+    steps:
+      - intent: tanya_pelatihan_aplikasi_jadi
+      - action: utter_pelatihan_aplikasi_jadi
+
+  - rule: Menjawab pertanyaan tentang issue aplikasi
+    steps:
+      - intent: tanya_issue_dalam_aplikasi
+      - action: utter_issue_dalam_aplikasi
+
+  - rule: Menjawab pertanyaan kompatibilitas perangkat
+    steps:
+      - intent: tanya_kompatibilitas_perangkat
+      - action: utter_kompatibilitas_perangkat
+
+  - rule: Menjawab pertanyaan durasi kontrak berlangganan
+    steps:
+      - intent: tanya_durasi_kontrak_berlangganan
+      - action: utter_durasi_kontrak_berlangganan
+
+  - rule: Menjawab pertanyaan metode pembayaran
+    steps:
+      - intent: tanya_metode_pembayaran
+      - action: utter_metode_pembayaran
+
+  - rule: Menjawab pertanyaan aktif tidak nomor WA
+    steps:
+      - intent: tanya_aktif_tidak_nomor_wa
+      - action: utter_aktif_tidak_nomor_wa
+
+  - rule: Menjawab pertanyaan invoice PDF via WA
+    steps:
+      - intent: tanya_invoice_pdf_via_wa
+      - action: utter_invoice_pdf_via_wa
+
+  - rule: Menjawab pertanyaan benefit jasa PT MTI
+    steps:
+      - intent: tanya_benefit_jasa_pt_mti
+      - action: utter_benefit_jasa_pt_mti
+
+  - rule: Menjawab pertanyaan konfigurasi email perangkat berbeda
+    steps:
+      - intent: tanya_konfigurasi_email_perangkat_berbeda
+      - action: utter_konfigurasi_email_perangkat_berbeda
+
+  - rule: Menjawab pertanyaan harga upgrade memori
+    steps:
+      - intent: tanya_harga_upgrade_memori
+      - action: utter_harga_upgrade_memori
+
+  - rule: Menjawab pertanyaan harga laptop anak
+    steps:
+      - intent: tanya_harga_laptop_anak
+      - action: utter_harga_laptop_anak
+
+  - rule: menjawab pertanyaan yang tidak dimengerti  # Cerita ketika intent tidak dikenali
+    steps:
+      - intent: nlu_fallback
+      - action: utter_fallback

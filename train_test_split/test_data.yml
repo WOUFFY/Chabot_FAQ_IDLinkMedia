@@ -1,0 +1,114 @@
+version: "3.1"
+nlu:
+- intent: tanya_harga_upgrade_memori
+  examples: |
+    - Kalau mau menambah kapasitas memori, biayanya berapa?
+    - Berapa sih harga buat upgrade memori perangkat?
+    - Penambahan kapasitas memori penyimpanan, berapa harganya?
+    - Saya mau meningkatkan RAM atau penyimpanan, kira-kira harganya berapa ya?
+- intent: tanya_harga_laptop_anak
+  examples: |
+    - Laptop buat sekolah daring anak, berapa duit kira-kira?
+    - Kira-kira kalau beli laptop buat anak, budget minimalnya berapa?
+    - Range harga laptop yang cocok buat anak-anak berapa, kak?
+- intent: nlu_fallback
+  examples: |
+    - apakah no wa
+    - tanya
+    - apa harga mobil?
+    - saya ingin beli motor
+- intent: tanya_konfigurasi_email_perangkat_berbeda
+  examples: |
+    - Gimana kalau pakai email yang sama tapi di device yang berbeda, bisa?
+    - Apakah satu email bisa dipakai untuk beberapa perangkat sekaligus?
+    - Boleh gak sih pakai email yang sama buat dua device berbeda?
+- intent: tanya_aktif_tidak_nomor_wa
+  examples: |
+    - Saya coba hubungi WA-nya, tapi belum dibalas. Itu masih aktif gak ya?
+    - Masih aktif gak sih nomor WA yang di web itu?
+    - Apakah nomor WA yang ada di website itu masih aktif?
+    - Apakah nomor WA PT MTI yang ada di kontak masih on?
+- intent: tanya_invoice_pdf_via_wa
+  examples: |
+    - Boleh minta invoice-nya dikirim via WA aja?
+    - Saya udah bayar, tolong kirim invoice-nya ke WA ya
+    - Nanti invoice-nya dikirimnya via email atau bisa juga ke WA?
+    - Invoice-nya bisa dalam bentuk PDF dan dikirim lewat WA gak?
+- intent: tanya_benefit_jasa_pt_mti
+  examples: |
+    - Apa untungnya kalau saya pesan aplikasi di tempat ini?
+    - Layanan PT MTI punya nilai tambah apa aja buat pelanggan?
+    - Kalau saya jadi klien, benefit yang bisa saya nikmati apa aja ya?
+    - Apa keunggulan yang ditawarkan dibanding kompetitor lain?
+- intent: tanya_harga_pembuatan_website
+  examples: |
+    - Kira-kira kalau pesen web, keluar uang berapa?
+    - Pokoknya saya pengen punya website, butuh duit berapa ya?
+    - Untuk pengembangan website harganya kira kira berapa?
+    - Bikin website buat usaha kecil gitu, biayanya gimana?
+    - Kalo mau buat aplikasi berbasis web biaya berapa ya?
+- intent: tanya_layanan_pt_mti
+  examples: |
+    - Produknya ada apa aja? Terus jasanya juga apa aja?
+    - Mereka nyediain layanan IT kayak gimana sih?
+    - Layanan dan jasa apa aja yang ditawarin sama PT MTI?
+    - Gue pengin tahu, MTI tuh nawarin jasa apa aja ya?
+    - Halo admin, mohon info tentang layanan yang ditawarkan PT MTI.
+- intent: tanya_pelatihan_aplikasi_jadi
+  examples: |
+    - PT Media Teknologi Informatika menyediakan pelatihan nggak setelah aplikasi selesai?
+    - Mas, website-nya udah jadi, cara makenya gimana nih?
+    - Kalau apps-nya udah kelar, ada onboarding-nya gak sih?
+    - Apakah pelatihan penggunaan udah termasuk di paket yang ditawarin?
+    - Kalo udah dapet aplikasinya, diajarin cara makenya gak?
+- intent: tanya_harga_pembuatan_aplikasi_android
+  examples: |
+    - Kalau aplikasi handphone kayak marketplace gitu, estimasinya berapa?
+    - Saya ingin membuat aplikasi mobile, kira-kira butuh dana berapa?
+    - Kalau aplikasi buat HP, biaya buatnya berapa?
+    - Berapa harga pembuatan aplikasi Android?
+    - Ongkos buat aplikasi mobile kira-kira gimana?
+- intent: tanya_harga_pembuatan_aplikasi_ios
+  examples: |
+    - Gue pengen bikin app iPhone, mahal gak sih?
+    - Berapa kira-kira biaya yang dibutuhkan untuk membuat aplikasi berbasis iOS?
+    - Harga untuk pembuatan aplikasi berbasis iOS berapa ya?
+    - Mau bikin aplikasi yang jalan di iPhone doang, butuh dana berapa?
+    - Berapa biaya yang harus saya siapkan untuk membuat aplikasi di platform iOS?
+- intent: tanya_metode_pembayaran
+  examples: |
+    - Kalo saya ambil aplikasi iOS, bayarnya bisa cicilan gak?
+    - Bisa minta info rekening pembayaran untuk jasa web dev-nya?
+    - Ada kerjasama pembayaran dengan bank tertentu gak?
+    - Pembayarannya kudu transfer manual atau ada virtual account?
+    - Apakah MTI menyediakan payment gateway?
+- intent: tanya_issue_dalam_aplikasi
+  examples: |
+    - Apa langkah yang harus saya ambil jika sistem yang saya pesan mengalami kerusakan?
+    - Kalo aplikasinya ngadat, bisa minta support dari PT MTI?
+    - Kalau nanti ke depan ada kendala, apakah PT Media Teknologi Informatika ada layanan maintenance-nya?
+    - PT MTI nawarin support after-sales buat kendala teknis gak?
+    - Apakah tersedia bantuan kalau aplikasi yang dibuat mengalami kendala?
+- intent: tanya_kompatibilitas_perangkat
+  examples: |
+    - Website-nya support gak buat device dari tahun 2016 ke atas?
+    - Kak, aplikasi ini bisa digunakan di tablet juga?
+    - Gue pake Android versi 9, apps ini masih bisa jalan gak?
+    - Kalau saya pakai perangkat mid-range, aplikasinya tetap oke kan?
+    - Apakah aplikasinya ringan dan bisa jalan di device low-end?
+- intent: tanya_durasi_kontrak_berlangganan
+  examples: |
+    - Ada kontrak gak kalau saya ambil layanan website bulanan?
+    - Kontrak kerja samanya berlaku buat layanan apa aja?
+    - Gue mau langganan hosting, kontraknya kudu ditandatanganin ya?
+    - PT MTI punya sistem kontrak berlangganan bulanan gak?
+    - Layanan langganan MTI ini berbasis kontrak tertulis atau sistem invoice aja?
+- intent: greet
+  examples: |
+    - hai mas
+    - siang kak, ada yang bisa dibantu?
+    - good morning!
+    - woi
+    - hallo bro
+    - ada yang bisa saya bantu?
+    - hai

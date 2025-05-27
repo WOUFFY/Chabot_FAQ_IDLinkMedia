@@ -1,0 +1,347 @@
+version: "3.1"
+nlu:
+- intent: tanya_harga_upgrade_memori
+  examples: |
+    - Kalo mau upgrade RAM atau memori, kira-kira butuh duit berapa?
+    - Harga buat meningkatkan kapasitas memori berapa ya?
+    - Upgrade memori perangkat, kira-kira harganya berapa?
+    - Berapa tarif penambahan memori di sini?
+    - Kira-kira biaya penambahan kapasitas memori berapa ya?
+    - Buat penyesuaian memori, saya harus bayar berapa?
+    - Biaya penyesuaian memori itu berapa?
+    - Butuh info harga untuk peningkatan penyimpanan, bisa kasih tau?
+    - Berapa ongkos untuk memperbesar kapasitas memori perangkat saya?
+    - Kalau mau tambah memori, budget-nya kira-kira berapa ya?
+    - Harga peningkatan memori berapa, kak?
+    - Untuk peningkatan memori, saya harus siapin dana berapa?
+    - Kalau penambahan memori, harganya sekitar berapa?
+- intent: tanya_harga_laptop_anak
+  examples: |
+    - Berapa estimasi biaya untuk beli laptop khusus anak?
+    - Kalau laptop entry-level buat anak-anak sekarang harganya berapa?
+    - Harga rata-rata laptop yang bisa dipakai anak sekolah berapa ya?
+    - Laptop buat anak kecil itu kira-kira berapa harganya?
+    - Berapa kisaran harga laptop untuk anak-anak?
+    - Laptop untuk anak belajar online, harganya masuk di angka berapa?
+    - Bang, laptop buat bocil tuh mulai dari harga berapa?
+    - Laptop khusus pelajar SD, biasanya berapa sih harganya?
+    - Saya mau beli laptop buat anak, harganya mulai dari berapa ya?
+    - Mas, rekomendasi laptop murah buat anak-anak ada gak? Budget-nya kisaran berapa?
+    - Harga laptop yang speknya cocok buat anak, kisaran berapa ya?
+    - Gue mau beliin laptop buat adek gue, budget-nya berapa ya biar cukup?
+    - Laptop ringan dan simpel buat anak kecil, biasanya berapa sih?
+    - Untuk anak SD atau SMP, kira-kira laptop yang oke itu start dari harga berapa?
+- intent: nlu_fallback
+  examples: |
+    - berapa harga baju?
+    - pembuatan mobil
+    - website
+    - harga
+    - berapa
+    - nomor wa
+    - wa
+    - mobil
+    - nomor
+    - apakah nomor wa
+    - web
+    - jual rumah?
+    - beli sepatu online
+- intent: tanya_konfigurasi_email_perangkat_berbeda
+  examples: |
+    - Kalau saya pakai dua perangkat, emailnya harus beda atau boleh sama?
+    - Email yang sama bisa dikonfigurasi di banyak perangkat gak sih?
+    - Saya mau tanya, email yang sama bisa digunakan di dua HP berbeda gak?
+    - Apa ada batasan pakai email yang sama di perangkat beda?
+    - Kalau perangkat berbeda, apa bisa satu email buat semua?
+    - Email yang sama bisa dipakai di beberapa perangkat sekaligus?
+    - Saya ingin tahu, email yang sama bisa dipakai di lebih dari satu perangkat gak?
+    - Bisa nggak konfigurasi email yang sama di perangkat yang beda-beda?
+    - Apakah gue bisa mengakses email yang sama di laptop dan tablet?
+    - Kalau saya punya dua gadget, bolehkah menggunakan satu email saja?
+    - Kalau punya dua perangkat, email yang sama bisa dipakai gak?
+    - Apakah saya bisa pakai email yang sama di dua perangkat berbeda?
+    - Saya punya laptop dan smartphone, bisa pakai email yang sama gak?
+    - Bisa nggak sih satu email dipakai di dua perangkat sekaligus?
+    - Gue mau tanya, apakah satu akun email bisa dipakai di laptop dan smartphone?
+- intent: tanya_aktif_tidak_nomor_wa
+  examples: |
+    - No WA PT Media Teknologi Informatika masih aktif kah?
+    - No WA yang dikasih bisa saya hubungi sekarang?
+    - No WA yang di web itu fast response gak?
+    - Kalau saya kirim pesan ke nomor WA yang ada di web, dibales gak ya?
+    - Nomor WhatsApp yang tercantum itu masih bisa dihubungi?
+    - Apakah nomor WA yang tertulis masih bisa saya gunakan untuk komunikasi?
+    - Saya lihat WA-nya di web, itu bisa dihubungi langsung?
+    - Boleh tanya, no WA yang tertera itu masih digunakan?
+    - Mbak, yang WA itu masih bisa dipakai gak?
+    - Nomornya masih nyala gak?
+    - Nomor WhatsApp-nya beneran aktif?
+    - No WA di website bisa dipakai buat tanya-tanya?
+    - Apakah kontak WA-nya masih jalan?
+    - WA yang di email itu aktif gak ya?
+    - WA yang di bio itu bisa di-chat gak?
+    - Mas, nomornya yang ini masih aktif buat tanya layanan?
+- intent: tanya_invoice_pdf_via_wa
+  examples: |
+    - Kirim invoice-nya ke WhatsApp saya aja boleh?
+    - Invoicenya bisa minta kirim via WA gak ya?
+    - Minta invoice-nya via WA aja, boleh kan?
+    - Apakah invoice bisa dikirim lewat WhatsApp?
+    - Saya mau terima invoice-nya lewat WA, bisa gak?
+    - Mbak, invoicenya bisa minta tolong dikirim ke WhatsApp?
+    - Bisa dikirimin invoice-nya lewat WhatsApp?
+    - Kirim invoice-nya pakai WA aja, lebih cepat
+    - Bisa minta invoice PDF-nya dikirim lewat nomor WA saya?
+    - Mas, invoicenya bisa dikirim ke nomor WA saya?
+    - Invoice bisa saya terima lewat WhatsApp kah?
+    - Invoice bisa di-WA-in aja gak usah lewat email?
+    - Apakah nanti bukti tagihannya dikirim juga lewat WA?
+    - Kalau sudah bayar, invoice-nya bisa dikirim ke WA saya?
+    - Invoice-nya bisa di-share via WA gak?
+    - Invoice bisa dikirim sebagai file PDF via WA?
+- intent: tanya_benefit_jasa_pt_mti
+  examples: |
+    - Saya pengen tau, kelebihannya apa aja sih kalau saya langganan di PT MTI?
+    - Kalau pakai layanan pembuatan web dari PT MTI, saya dapat apa aja?
+    - Jasa yang ditawarkan itu punya kelebihan apa aja sih?
+    - Ada fitur atau support khusus yang jadi nilai plus dari layanan MTI?
+    - Gimana keuntungan buat saya kalo jadi pelanggan PT MTI?
+    - Manfaat apa yang akan saya dapatkan dengan menggunakan jasa PT Media Teknologi Informatika?
+    - Selain dapat aplikasi, saya dapat benefit apa lagi?
+    - Kalau saya berlangganan layanan digital di sini, dapet bonus atau keuntungan tertentu gak?
+    - Apa aja manfaat yang saya peroleh kalau kerja sama sama PT MTI?
+    - Benefit apa aja sih kalau saya pakai jasanya PT Media Teknologi Informatika?
+    - Kira-kira ada value tambahannya nggak kalau pakai jasa MTI?
+    - Kalau saya ambil layanan hosting dan web development, dapet fasilitas apa aja?
+    - Kalau saya ambil paket website, dapet apa aja di dalamnya?
+    - Bisa dijelasin benefit utamanya apa kalau pakai jasanya?
+    - Keuntungan apa yang saya dapat kalau langganan di sini?
+    - Kalau langganan di PT MTI, ada benefit eksklusif gak?
+- intent: tanya_harga_pembuatan_website
+  examples: |
+    - Buat bikin website berapa ya?
+    - Berapa harga pembuatan website?
+    - Pokoknya web-nya simpel aja, kira-kira habis berapa?
+    - Jika saya ingin membuat sebuah web, berapa biaya yang harus saya siapkan?
+    - Untuk pembuatan website secara keseluruhan, berapa biaya yang diperlukan?
+    - Harganya fix atau tergantung desain dan fitur web-nya?
+    - Berapa biaya yang dibutuhkan untuk membuat website?
+    - Kalau mau jasa pembuatan web, bayarnya berapa sih?
+    - Pokoknya saya pengen punya web buat bisnis, estimasinya brp?
+    - Mau pesen web tapi pengen tau dulu harganya dong
+    - Berapa harga pembuatan per satu website?
+    - Berapasih harga yang dibutuhkan untuk membangun sebuah aplikasi berbasis website dalam waktu kurun 1 bulan?
+    - Kalau mau web standar doang, budget-nya sekitar brapa?
+    - Berapa kira-kira harga untuk membuat sebuah aplikasi berbasis website?
+    - Berapa harga untuk membuat sebuah web?
+    - Harga untuk pembuatan aplikasi berbasis web berapa ya?
+    - Ongkos buat website tuh brp ya?
+    - Gue mau bikin web, kisaran harganya berapa?
+    - Bikin web tuh mahal ga sih? Kurang lebih brp?
+- intent: tanya_layanan_pt_mti
+  examples: |
+    - MTI bantu urusan IT juga gak?
+    - Kak, di PT MTI ada layanan buat pembuatan aplikasi juga gak?
+    - Layanan yang ditawarkan MTI itu mencakup apa aja?
+    - Tanya dong, MTI punya jasa cloud service juga gak?
+    - Kalau kerja sama sama MTI, bisa dapet layanan apa aja?
+    - MTI punya jasa sistem informasi gak?
+    - Apa saja layanan yang tersedia di PT Media Teknologi Informatika?
+    - Bro, di MTI ada jasa IT apa aja?
+    - Bisa dijelaskan layanan jasa apa saja yang ada di PT MTI?
+    - MTI itu nyediain solusi digital apa aja?
+    - Mbak, bisa infoin nggak PT Media Teknologi Informatika punya layanan apa aja?
+    - Jasa-jasa apa yang bisa saya dapetin dari PT Media Teknologi Informatika?
+    - Ada servis apa aja di Media Teknologi Informatika?
+    - PT Media Teknologi Informatika menyediakan layanan apa aja sih?
+    - PT MTI tuh fokus di bidang layanan apa aja sih?
+    - Kalau gue butuh jasa teknologi, MTI bisa bantuin apa aja?
+    - Gue lagi cari vendor IT, MTI nawarin apa aja ya?
+    - Layanan konsultasi, develop, maintenance juga ada nggak ya di PT MTI?
+    - Jasa IT yang ditawarin MTI lengkap gak?
+- intent: tanya_pelatihan_aplikasi_jadi
+  examples: |
+    - Ada nggak pelatihan penggunaan sistemnya setelah delivery?
+    - Gue udah dapet aplikasinya, tapi masih bingung makenya. Ada pelatihannya gak?
+    - Apakah ada bimbingan atau panduan buat pake aplikasi yang sudah dikirim?
+    - Aplikasinya udah ready, tapi user kami belum bisa pakai. Bisa minta pelatihan?
+    - Kira-kira ada pendampingan gak buat tim saya biar bisa gunain aplikasinya?
+    - Setelah aplikasi kelar, apakah user akan dikasih training juga?
+    - Saya butuh training buat tim internal setelah aplikasinya jadi. Ada fasilitas itu?
+    - Apakah ada pelatihan untuk penggunaan aplikasi setelah selesai dibuat?
+    - Setelah deal dan project selesai, apa dapet support pelatihan juga?
+    - Setelah aplikasinya jadi, apakah ada training pemakaian?
+    - Buat yang gak ngerti IT banget, ada sesi ngajarin make apps-nya gak?
+    - Apa disediakan sesi training setelah pengembangan aplikasi selesai?
+    - Gue bayar aplikasinya, tapi belum paham cara jalaninnya. Bisa dapet training gak?
+    - Bro, abis jadi aplikasinya, diajarin make gak tuh?
+    - Tutorial atau pelatihan bakal dikasih gak setelah project-nya selesai?
+    - Kalau kita pesan sistem, nanti dibimbing cara pakainya gak?
+    - Mbak, pelatihan after-sales-nya include nggak?
+    - Sistemnya udah live, tinggal pelatihannya aja nih. Ada gak ya?
+    - PT MTI bantuin user belajar aplikasi juga gak?
+- intent: tanya_harga_pembuatan_aplikasi_android
+  examples: |
+    - Pokoknya saya mau aplikasi jalan di HP, biayanya sekitar berapa?
+    - Berapa biaya untuk membuat aplikasi berbasis Android?
+    - Berapa harga pembuatan aplikasi untuk HP Android?
+    - Berapa uang yang harus disiapin kalau mau bikin aplikasi untuk HP?
+    - Kalo apps-nya simpel aja, berapa duit yang dibutuhin?
+    - Harga untuk pembuatan aplikasi Android berapa ya?
+    - Kalau apps-nya lengkap plus database, harganya berapa ya?
+    - Kalo mau bikin aplikasi HP, kena biaya berapa?
+    - Biaya fix atau tergantung fitur aplikasi HP-nya?
+    - Gue pengen bikin aplikasi handphone, harganya berapa ya?
+    - Untuk bikin aplikasi mobile lengkap, perlu anggaran berapa?
+    - Harga buat develop aplikasi mobile full fitur kira-kira gimana?
+    - Mau tau harga jasa bikin aplikasi mobile dong
+    - Pokoknya mau bikin app di HP, yang penting jalan, biayanya gimana?
+    - Harga buat bikin app mobile di range berapa ya?
+    - Kalau mau order aplikasi untuk handphone, kisaran harganya berapa ya?
+    - Berapa sih biaya bikin aplikasi mobile dari nol?
+    - Kalau buat aplikasi untuk perangkat mobile mahal gak sih? Kira-kira berapa biayanya?
+    - Kalau fitur cuma login, form, dan dashboard, berapa ya harganya?
+    - Buat bikin aplikasi mobile buat bisnis kecil, mahal gak?
+- intent: tanya_harga_pembuatan_aplikasi_ios
+  examples: |
+    - Pokoknya mau bikin aplikasi buat iOS, kira-kira habis berapa duit?
+    - Harga buat develop app khusus buat iOS berapa ya?
+    - Kalau aplikasi dibuat buat iOS doang, kisaran harganya berapa?
+    - Kalau apps-nya buat iOS aja, estimasi biayanya gimana?
+    - Kalau develop-nya native iOS, estimasi harga gimana?
+    - Kalo cuma pengen app iOS buat bisnis kecil, biayanya gimana?
+    - Harga pembuatan aplikasi untuk iPhone berapa ya?
+    - Mas, tanya dong, kalau mau bikin aplikasi iOS, harganya berapa ya?
+    - Boleh minta rincian harga untuk pembuatan aplikasi iOS?
+    - Biaya develop aplikasi iOS itu tergantung fitur juga gak?
+    - Kalo pakai Swift atau Xcode, harga pembuatan aplikasi iOS-nya gimana?
+    - Berapa harga pembuatan aplikasi di iOS?
+    - Kalo mau bikin aplikasi iOS, kena biaya berapa kira-kira?
+    - Kalo app-nya buat iOS aja, butuh modal berapa?
+    - Harga jasa bikin aplikasi iOS full fitur sekarang berapa-an?
+    - Buat bikin aplikasi di ekosistem Apple, harus siapin berapa?
+    - Untuk pembuatan aplikasi iOS secara keseluruhan, berapa biaya yang diperlukan?
+    - Kalau cuma iOS aja tanpa Android, ongkosnya lebih mahal nggak?
+    - Berapa harga untuk pembuatan aplikasi dengan basis iOS?
+    - Aplikasi iOS dengan fitur standar aja, kena harga berapa?
+- intent: tanya_metode_pembayaran
+  examples: |
+    - Bayar langganan bisa via internet banking?
+    - Bisa bayar pakai QRIS gak?
+    - Untuk jasa pembuatan aplikasi, pembayarannya via apa?
+    - Pembayaran langganan via e-wallet bisa?
+    - Mbak, buat langganan layanannya bayarnya ke mana ya?
+    - Metode pembayaran yang tersedia apa aja?
+    - Kalau buat langganan hosting, metode pembayarannya gimana?
+    - Bayarnya bisa pake OVO, DANA, atau Gopay gak?
+    - Apakah ada pilihan cicilan untuk proyek aplikasi?
+    - Pembayaran via kartu kredit bisa gak?
+    - Transfer ke rekening bank apa ya untuk bayar jasanya?
+    - Saya udah dapet invoice, bayarnya lewat mana ya?
+    - Kalau saya order aplikasi, bayarnya gimana? DP dulu atau full?
+    - Pembayaran buat layanan MTI bisa lewat apa aja?
+    - Sistem pembayaran di MTI tuh per tahap atau langsung lunas?
+    - Kalau mau bayar, caranya gimana?
+    - Mas, kalau saya mau bayar invoice-nya bisa transfer ke mana?
+    - Pembayaran bisa melalui metode apa aja ya?
+    - Ada pilihan bayar online? atau harus transfer manual?
+    - Pembayaran aplikasi bisa lewat bank apa aja?
+- intent: tanya_issue_dalam_aplikasi
+  examples: |
+    - Kalau saya nemuin masalah pas make aplikasinya, harus lapor ke mana ya?
+    - Gue dapet bug pas buka apps-nya, itu bisa diklaim ke MTI gak sih?
+    - Kalau app error, saya harus hubungi siapa ya?
+    - Apakah ada garansi kalau aplikasinya bermasalah?
+    - Kalo pas dipakai ada masalah, dibantu juga gak?
+    - Apakah saya bisa minta bantuan teknis kalau apps-nya bermasalah?
+    - Oia, kalau aplikasinya rewel, MTI tanggung jawab nggak sih?
+    - Kalau web atau mobile app-nya trouble, gimana cara ngatasinnya?
+    - Kalau misal sistemnya ngaco, langsung ditangani atau gimana ya?
+    - Kalau web-nya down, saya lapor ke mana?
+    - Gue nemuin masalah pas ngakses websitenya, itu bisa disupport gak?
+    - Apakah ada tim teknis yang bisa bantu kalau saya ada kendala di aplikasi?
+    - Mbak, kalau tiba-tiba app nge-bug, bisa minta bantuan ke mana?
+    - Kalau tiba-tiba app-nya crash, MTI bisa bantu troubleshoot gak?
+    - Jika ada masalah dalam aplikasi, apa yang harus saya lakukan?
+    - Kalau ada gangguan teknis, bisa langsung minta perbaikan gak?
+    - Gimana prosedur pengaduan kalau ada trouble di app?
+    - Kalau ada error dalam aplikasi, apakah PT Media Teknologi Informatika mau membantu memperbaikinya?
+    - Ada gak kontak support kalau sistemnya bermasalah?
+    - Siapa yang bisa saya hubungi kalau terjadi isu pada aplikasi saya?
+    - Error di bagian mana pun, bisa minta fix dari tim MTI gak?
+- intent: tanya_kompatibilitas_perangkat
+  examples: |
+    - Apakah aplikasi bisa dipakai lintas platform dan lintas device?
+    - Ini aplikasi udah compatible sama iOS 15 ke atas belum ya?
+    - Apakah aplikasi bakal nyambung sama semua jenis device user?
+    - Aplikasinya cuma jalan di versi terbaru doang, atau bisa juga di versi lama?
+    - Kalau device gue keluaran 2018, aplikasinya tetap jalan gak?
+    - Bisa dipake di Android versi lawas gak?
+    - Apakah ada batasan tipe atau versi device buat install aplikasi ini?
+    - Website-nya mobile friendly gak?
+    - Ada standar minimum gak buat pake aplikasi ini?
+    - Apakah software ini hanya untuk perangkat modern aja?
+    - Gue pakai iPhone lama, aplikasi ini masih bisa dipake gak sih?
+    - Apakah semua perangkat Android dan iOS bisa jalanin aplikasi ini?
+    - Apakah ada requirement khusus untuk menjalankan aplikasinya?
+    - Produk ini butuh spek tinggi gak buat dijalanin?
+    - Web app-nya bisa dibuka di semua browser dan perangkat gak?
+    - Apakah aplikasi Android ini bisa dipake di semua versi OS?
+    - Kalau HP-nya udah agak jadul, tetep bisa akses aplikasinya gak?
+    - Apakah aplikasi yang dibuat bisa digunakan di semua perangkat?
+    - Ini apps-nya kompatibel gak buat iOS lawas kayak versi 12 atau 13?
+    - Produk ini kompatibel dengan perangkat apa aja?
+    - Mas, apps-nya bisa jalan di HP keluaran lama gak?
+- intent: tanya_durasi_kontrak_berlangganan
+  examples: |
+    - Langganannya sistem paket atau gimana ya? Kontraknya per bulan atau tahunan?
+    - Bisa dijelasin nggak soal kontrak kerja samanya?
+    - Apakah harus bikin kontrak tertulis kalau mau berlangganan produk MTI?
+    - Kalo mau berlangganan, sistem PKS-nya gimana ya?
+    - Kira-kira kontrak langganannya fleksibel atau harus tahunan?
+    - Kalau saya mau subscribe layanan hostingnya, perjanjian kerjanya kayak gimana?
+    - Sistem langganannya auto-renew atau manual?
+    - Bisa gak langganan trial dulu sebelum tanda tangan kontrak?
+    - Gimana sih sistem kontraknya kalau mau langganan di MTI?
+    - Mbak, kalau saya tertarik pakai jasa hosting, langkah pertama apa ya? Ada kontraknya?
+    - Saya mau langganan hosting, minimal durasi kontraknya berapa lama?
+    - Kalau udah deal, perjanjiannya gimana sih bentuknya?
+    - Kalau saya ambil layanan email hosting, perlu tanda tangan kontrak gak?
+    - Apakah ada contoh draft PKS yang bisa saya pelajari?
+    - Pak, kalau mau langganan website per bulan, kisaran biayanya dan kontraknya gimana ya?
+    - Kalau saya ambil layanan tahunan, kontraknya seperti apa?
+    - Untuk kontrak berlangganan, apa aja yang perlu disiapkan dari sisi saya sebagai klien?
+    - Kalau saya tertarik berlangganan, step-by-step kontraknya gimana?
+    - Kalau putus langganan di tengah kontrak, ada penalti atau enggak?
+    - Kontraknya bisa dinego gak sih, menyesuaikan kebutuhan kami?
+    - Apakah ada perjanjian legal kalau kita subscribe ke layanan digital dari MTI?
+- intent: greet
+  examples: |
+    - selamat pagi, tim PT MTI
+    - hey
+    - salam hangat
+    - salam kenal
+    - hai bot, bisa bantu gue gak?
+    - heloo semuanya!
+    - selamat sore
+    - selamat siang
+    - hi
+    - selamat pagi
+    - yo
+    - sore gan, lagi ada di tempat?
+    - selamat malam
+    - oi
+    - woy chatbot, aktif gak nih?
+    - permisi
+    - hai kak
+    - good evening!
+    - halo mbak
+    - yow, ada yang bisa bantuin?
+    - malem, saya mau nanya-nanya dong
+    - ada yang bisa bantuin saya?
+    - hello bot!
+    - pagi gan!
+    - assalamualaikum
+    - bro, nyala gak nih chatbot-nya?
+    - hi there!
+    - halo

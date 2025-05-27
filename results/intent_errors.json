@@ -1,0 +1,58 @@
+[
+  {
+    "text": "Kalau mau menambah kapasitas memori, biayanya berapa?",
+    "intent": "tanya_harga_upgrade_memori",
+    "intent_prediction": {
+      "name": "tanya_harga_pembuatan_website",
+      "confidence": 0.42468640208244324
+    }
+  },
+  {
+    "text": "Penambahan kapasitas memori penyimpanan, berapa harganya?",
+    "intent": "tanya_harga_upgrade_memori",
+    "intent_prediction": {
+      "name": "tanya_harga_pembuatan_website",
+      "confidence": 0.776840329170227
+    }
+  },
+  {
+    "text": "Saya mau meningkatkan RAM atau penyimpanan, kira-kira harganya berapa ya?",
+    "intent": "tanya_harga_upgrade_memori",
+    "intent_prediction": {
+      "name": "tanya_harga_pembuatan_website",
+      "confidence": 0.8932422995567322
+    }
+  },
+  {
+    "text": "apakah no wa",
+    "intent": "nlu_fallback",
+    "intent_prediction": {
+      "name": "tanya_harga_upgrade_memori",
+      "confidence": 0.0009732545586302876
+    }
+  },
+  {
+    "text": "tanya",
+    "intent": "nlu_fallback",
+    "intent_prediction": {
+      "name": "tanya_harga_upgrade_memori",
+      "confidence": 0.0004983188700862229
+    }
+  },
+  {
+    "text": "apa harga mobil?",
+    "intent": "nlu_fallback",
+    "intent_prediction": {
+      "name": "tanya_harga_upgrade_memori",
+      "confidence": 0.0011493827914819121
+    }
+  },
+  {
+    "text": "saya ingin beli motor",
+    "intent": "nlu_fallback",
+    "intent_prediction": {
+      "name": "tanya_harga_upgrade_memori",
+      "confidence": 0.0009592755232006311
+    }
+  }
+]
