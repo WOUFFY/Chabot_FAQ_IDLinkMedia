@@ -1,12 +1,20 @@
 'use strict';
 
-const fs = require('fs');
+// modul untuk mengelola file sistem, path, dan Sequelize
+const fs = require('fs'); 
+// mengimpor modul path untuk mengelola path file
 const path = require('path');
+// mengimpor Sequelize dari sequelize package
 const Sequelize = require('sequelize');
+// mengimpor modul process untuk mengakses variabel global
 const process = require('process');
+// mendefinisikan nama file ini untuk menghindari konflik saat membaca direktori
 const basename = path.basename(__filename);
+// mengimpor konfigurasi database berdasarkan lingkungan (development, production, dll)
 const env = process.env.NODE_ENV || 'development';
+// mengimpor konfigurasi database dari file config.json
 const config = require(__dirname + '/../config/config.json')[env];
+// mendefinisikan objek db untuk menyimpan model-model yang akan didefinisikan
 const db = {};
 
 let sequelize;

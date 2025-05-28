@@ -1,3 +1,5 @@
+// sebgai entry point untuk aplikasi Node.js yang mengelola bot Rasa dan menyediakan API untuk interaksi dengan bot tersebut.
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');

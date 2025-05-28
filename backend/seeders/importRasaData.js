@@ -1,3 +1,5 @@
+// untuk menulis script yang mengimpor data dari Rasa ke database menggunakan Sequelize
+
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
