@@ -2,90 +2,95 @@
 #### If you want to learn more, please see the docs: https://rasa.com/docs/rasa/testing-your-assistant
 
 stories:
-- story: happy path 1
+- story: test sapa pengguna
   steps:
-  - user: |
-      hello there!
-    intent: greet
-  - action: utter_greet
-  - user: |
-      amazing
-    intent: mood_great
-  - action: utter_happy
+    - user: |
+        Hai
+      intent: greet
+    - action: utter_greet
 
-- story: happy path 2
+- story: test harga pembuatan aplikasi lengkap
   steps:
-  - user: |
-      hello there!
-    intent: greet
-  - action: utter_greet
-  - user: |
-      amazing
-    intent: mood_great
-  - action: utter_happy
-  - user: |
-      bye-bye!
-    intent: goodbye
-  - action: utter_goodbye
+    - user: |
+        Berapa harga untuk membuat website?
+      intent: tanya_harga_pembuatan_website
+    - action: utter_harga_pembuatan_website
+    - user: |
+        Kalau aplikasi Android berapa?
+      intent: tanya_harga_pembuatan_aplikasi_android
+    - action: utter_harga_pembuatan_aplikasi_android
+    - user: |
+        Kalau iOS?
+      intent: tanya_harga_pembuatan_aplikasi_ios
+    - action: utter_harga_pembuatan_aplikasi_ios
 
-- story: sad path 1
+- story: test layanan dan benefit
   steps:
-  - user: |
-      hello
-    intent: greet
-  - action: utter_greet
-  - user: |
-      not good
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      yes
-    intent: affirm
-  - action: utter_happy
+    - user: |
+        Apa saja layanan yang tersedia?
+      intent: tanya_layanan_pt_mti
+    - action: utter_layanan_pt_mti
+    - user: |
+        Kalau ada error di aplikasi bagaimana?
+      intent: tanya_issue_dalam_aplikasi
+    - action: utter_issue_dalam_aplikasi
+    - user: |
+        Apa keuntungan menggunakan jasa MTI?
+      intent: tanya_benefit_jasa_pt_mti
+    - action: utter_benefit_jasa_pt_mti
 
-- story: sad path 2
+- story: test customer care dan pelatihan
   steps:
-  - user: |
-      hello
-    intent: greet
-  - action: utter_greet
-  - user: |
-      not good
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      not really
-    intent: deny
-  - action: utter_goodbye
+    - user: |
+        Kalau aplikasi bermasalah?
+      intent: tanya_issue_dalam_aplikasi
+    - action: utter_issue_dalam_aplikasi
+    - user: |
+        Apakah ada pelatihan setelah aplikasi jadi?
+      intent: tanya_pelatihan_aplikasi_jadi
+    - action: utter_pelatihan_aplikasi_jadi
 
-- story: sad path 3
+- story: test kontrak dan pembayaran
   steps:
-  - user: |
-      hi
-    intent: greet
-  - action: utter_greet
-  - user: |
-      very terrible
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      no
-    intent: deny
-  - action: utter_goodbye
+    - user: |
+        Kontraknya berapa lama?
+      intent: tanya_durasi_kontrak_berlangganan
+    - action: utter_durasi_kontrak_berlangganan
+    - user: |
+        Pembayarannya bagaimana?
+      intent: tanya_metode_pembayaran
+    - action: utter_metode_pembayaran
+    - user: |
+        Bisa minta invoice lewat WA?
+      intent: tanya_invoice_pdf_via_wa
+    - action: utter_invoice_pdf_via_wa
 
-- story: say goodbye
+- story: test pertanyaan teknis
   steps:
-  - user: |
-      bye-bye!
-    intent: goodbye
-  - action: utter_goodbye
+    - user: |
+        Kompatibel dengan perangkat apa saja?
+      intent: tanya_kompatibilitas_perangkat
+    - action: utter_kompatibilitas_perangkat
+    - user: |
+        Bagaimana konfigurasi email jika pakai perangkat berbeda?
+      intent: tanya_konfigurasi_email_perangkat_berbeda
+    - action: utter_konfigurasi_email_perangkat_berbeda
+    - user: |
+        Apakah nomor WA masih aktif?
+      intent: tanya_aktif_tidak_nomor_wa
+    - action: utter_aktif_tidak_nomor_wa
+    - user: |
+        Berapa biaya upgrade memori?
+      intent: tanya_harga_upgrade_memori
+    - action: utter_harga_upgrade_memori
+    - user: |
+        Ada laptop untuk anak-anak?
+      intent: tanya_harga_laptop_anak
+    - action: utter_harga_laptop_anak
 
-- story: bot challenge
+- story: test fallback scenario
   steps:
-  - user: |
-      are you a bot?
-    intent: bot_challenge
-  - action: utter_iamabot
+    - user: |
+        asdfgh qwerty zxcv
+      intent: nlu_fallback
+    - action: utter_fallback
