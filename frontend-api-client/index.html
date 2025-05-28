@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Chatbot API Client</title>
+    <title>Home - Chatbot API Client</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
-    <h1>Chatbot API Client</h1>
     <div class="tabs">
+        <a href="index.html"><button class="active">Home</button></a>
         <a href="intents.html"><button>Intents</button></a>
         <a href="stories.html"><button>Stories</button></a>
         <a href="rules.html"><button>Rules</button></a>
+        <a href="rule_steps.html"><button>Rule Steps</button></a>
         <a href="intent_examples.html"><button>Intent Examples</button></a>
         <a href="story_steps.html"><button>Story Steps</button></a>
         <a href="train.html"><button>Train</button></a>
+        <a href="domain.html"><button>Domain</button></a>
     </div>
-    <p>Silakan pilih menu di atas.</p>
+    <div id="content1">
+        <h1>Chatbot API Client</h1>
+        <p>Welcome to the Chatbot API Client. Use the navigation above to manage your chatbot configuration.</p>
+
+        <h2>Quick Overview</h2>
+        <ul>
+            <li><strong>Intents</strong> - Define what a user might want to do</li>
+            <li><strong>Intent Examples</strong> - Example phrases for each intent</li>
+            <li><strong>Stories</strong> - Conversation flows between the user and bot</li>
+            <li><strong>Story Steps</strong> - Individual steps that make up a story</li>
+            <li><strong>Rules</strong> - Simple rules for the bot to follow</li>
+            <li><strong>Domain</strong> - Define responses, session configuration, and more</li>
+            <li><strong>Train</strong> - Train your chatbot model</li>
+        </ul>
+    </div>
+
+    <script src="./js/apiClient.js"></script>
 </body>
+
 </html>

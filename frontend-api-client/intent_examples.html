@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Intent Examples - Chatbot API Client</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
     <div class="tabs">
         <a href="index.html"><button>Home</button></a>
         <a href="intents.html"><button>Intents</button></a>
         <a href="stories.html"><button>Stories</button></a>
         <a href="rules.html"><button>Rules</button></a>
-        <a href="intent_examples.html"><button>Intent Examples</button></a>
+        <a href="rule_steps.html"><button>Rule Steps</button></a>
+        <a href="intent_examples.html"><button class="active">Intent Examples</button></a>
         <a href="story_steps.html"><button>Story Steps</button></a>
         <a href="train.html"><button>Train</button></a>
+        <a href="domain.html"><button>Domain</button></a>
     </div>
     <div id="content"></div>
-    <script>
-        window.onload = function() { renderIntentExamples(); }
-    </script>
+
     <script src="./js/apiClient.js"></script>
+    <script src="./js/modules/intentExamples.js"></script>
+    <script>
+        window.onload = function () { renderIntentExamples(); }
+    </script>
 </body>
+
 </html>

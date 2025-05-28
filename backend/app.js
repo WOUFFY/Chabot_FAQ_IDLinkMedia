@@ -9,7 +9,7 @@ const { swaggerUi, swaggerDocs } = require('./utils/swagger');
 const db = require('./models');
 
 // Import routes
-const trainRouter = require('./routes/train');
+const routes = require('./routes');
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // API Routes
-app.use('/api', trainRouter);
+app.use('/api', routes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
