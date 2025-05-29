@@ -19,11 +19,6 @@ async function renderIntents() {
                 <label for="intentName">Nama Intent:</label>
                 <input id="intentName" name="name" placeholder="Nama Intent (e.g. greet, goodbye)" required>
             </div>
-            <div class="form-group">
-                <label for="intentExamples">Examples:</label>
-                <textarea id="intentExamples" name="examples" placeholder="Examples (comma separated, e.g. hello, hi there, greetings)" rows="3"></textarea>
-                <span class="hint">Enter comma-separated phrases that represent this intent</span>
-            </div>
             <button type="submit" class="primary-btn">Tambah Intent</button>
             <div id="message" class="message"></div>
         </form>
@@ -39,7 +34,7 @@ async function renderIntents() {
         // Membuat form tambah intent dan header tabel
 
         if (data.length === 0) {
-            html += `<tr><td colspan="4" class="no-data">No intents found. Add your first intent above.</td></tr>`;
+            html += `<tr><td colspan="5" class="no-data">No intents found. Add your first intent above.</td></tr>`;
             // Jika belum ada intent, tampilkan pesan
         } else {
             data.forEach(i => {
@@ -100,6 +95,19 @@ async function renderIntents() {
                     padding: 8px;
                     border-radius: 4px;
                     border: 1px solid #ced4da;
+                }
+                .checkbox-group {
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: flex-start;
+                }
+                .checkbox-group input[type="checkbox"] {
+                    margin-right: 10px;
+                    margin-top: 4px;
+                }
+                .checkbox-group label {
+                    font-weight: bold;
+                    margin-right: 10px;
                 }
                 .hint {
                     display: block;
@@ -188,6 +196,35 @@ async function renderIntents() {
                     color: #6c757d;
                     font-style: italic;
                 }
+                .domain-status {
+                    display: inline-block;
+                    padding: 3px 8px;
+                    border-radius: 3px;
+                    font-size: 0.9em;
+                    font-weight: 500;
+                }
+                .domain-status.synced {
+                    background-color: #d4edda;
+                    color: #155724;
+                }
+                .domain-status.not-synced {
+                    background-color: #f8d7da;
+                    color: #721c24;
+                }
+                .sync-btn {
+                    display: block;
+                    border: none;
+                    background-color: #007bff;
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    margin-top: 5px;
+                    font-size: 0.85em;
+                }
+                .sync-btn:hover {
+                    background-color: #0069d9;
+                }
             </style>
         `);
 
@@ -196,9 +233,11 @@ async function renderIntents() {
             // Mencegah reload halaman saat submit form
             const fd = new FormData(e.target);
             const messageEl = document.getElementById('message');
+            const defaultResponse = fd.get('defaultResponse') || `This is a default response for ${fd.get('name')}`;
 
             try {
-                const response = await fetch(`${API_BASE}/intents`, {
+                // 1. Create the regular intent
+                const intentResponse = await fetch(`${API_BASE}/intents`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -206,15 +245,55 @@ async function renderIntents() {
                         examples: fd.get('examples') ? fd.get('examples').split(',').map(s => s.trim()).filter(s => s) : []
                     })
                 });
-                // Kirim data intent baru ke backend
 
-                if (!response.ok) {
-                    const errorData = await response.json();
+                if (!intentResponse.ok) {
+                    const errorData = await intentResponse.json();
                     throw new Error(errorData.error || 'Failed to create intent');
                 }
 
+                // Get the created intent data to use its ID for domain mapping
+                const intentData = await intentResponse.json();
+
+                // 2. If auto sync is enabled, create domain intent and response
+                if (true) {
+                    // Create domain intent
+                    const domainIntentResponse = await fetch(`${API_BASE}/domain-db/intents`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: fd.get('name') })
+                    });
+
+                    if (!domainIntentResponse.ok) {
+                        console.error('Failed to create domain intent');
+                    }
+
+                    // Create domain response (utter_{intent_name})
+                    const utterName = `utter_${fd.get('name')}`;
+                    const domainResponseResponse = await fetch(`${API_BASE}/domain-db/responses`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: utterName,
+                            templates: [{ text: defaultResponse }]
+                        })
+                    });
+
+                    if (!domainResponseResponse.ok) {
+                        console.error('Failed to create domain response');
+                    }
+
+                    // Update the intent to mark it as having domain mapping
+                    await fetch(`${API_BASE}/intents/${intentData.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            hasDomainMapping: true
+                        })
+                    });
+                }
+
                 // Tampilkan pesan sukses
-                messageEl.textContent = 'Intent created successfully!';
+                messageEl.textContent = `Intent created successfully and Domain intent and utter response also created.`;
                 messageEl.className = 'message success';
                 messageEl.style.display = 'block';
 
@@ -239,6 +318,10 @@ async function renderIntents() {
                 }, 5000);
             }
         };
+
+        // Check if we need to add the hasDomainMapping property to existing intents
+        checkDomainMappings(data);
+
     } catch (error) {
         document.getElementById('content').innerHTML = `
             <div class="error-container">
@@ -248,6 +331,41 @@ async function renderIntents() {
             </div>
         `;
         // Jika error saat fetch, tampilkan pesan error
+    }
+}
+
+// Function to check and update domain mappings for existing intents
+async function checkDomainMappings(intents) {
+    try {
+        // Get all domain intents
+        const domainIntentsRes = await fetch(`${API_BASE}/domain-db/intents`);
+        const domainIntents = await domainIntentsRes.json();
+
+        // Create a map for faster lookup
+        const domainIntentMap = {};
+        domainIntents.forEach(intent => {
+            domainIntentMap[intent.name] = intent.id;
+        });
+
+        // Check each intent to see if it has a domain mapping
+        for (const intent of intents) {
+            // Skip if we already know it has a mapping
+            if (intent.hasDomainMapping === true) continue;
+
+            // Check if there's a corresponding domain intent
+            if (domainIntentMap[intent.name]) {
+                // Update the intent to mark it as having domain mapping
+                await fetch(`${API_BASE}/intents/${intent.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        hasDomainMapping: true
+                    })
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Failed to check domain mappings:", error);
     }
 }
 
@@ -261,7 +379,7 @@ async function addExample(intentId) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                text: example.trim(),
+                text: `- ${example.trim()}`,
                 IntentId: intentId
             })
         });
@@ -299,21 +417,127 @@ async function deleteIntentExample(exampleId) {
 
 // Fungsi untuk menghapus intent beserta semua contoh kalimatnya dalam kolom actions
 async function deleteIntent(id) {
-    if (confirm('apakah kamu yakin ingin menghapus intent ini? Semua EXAMPLE dalam INTENT ini akan terhapus.')) {
+    if (confirm('apakah kamu yakin ingin menghapus intent ini? Semua EXAMPLE dalam INTENT ini akan terhapus. Domain intent dan utter response terkait juga akan dihapus.')) {
         try {
+            // Get the intent details first to know its name
+            const intentRes = await fetch(`${API_BASE}/intents/${id}`);
+
+            if (!intentRes.ok) {
+                throw new Error(`Failed to get intent details: ${intentRes.status}`);
+            }
+
+            const intentData = await intentRes.json();
+            const intentName = intentData.name;
+            const utterName = `utter_${intentName}`;
+
+            // 1. Find and delete domain intent
+            const domainIntentsRes = await fetch(`${API_BASE}/domain-db/intents/${intentName}/name-exists`);
+            const domainIntentsExists = await domainIntentsRes.json();
+
+            // 2. Find domain response (utter_{intent_name})
+            const domainResponseRes = await fetch(`${API_BASE}/domain-db/responses/${utterName}/name-exists`);
+            const domainResponseExists = await domainResponseRes.json();
+
+            // First, try to delete domain mappings if they exist
+            if (domainIntentsExists.length !== 0 && domainResponseExists.length !== 0) {
+                try {
+                    const deleteIntentRes = await fetch(`${API_BASE}/domain-db/intents/${domainIntentsExists?.id}`, { method: 'DELETE' });
+
+
+                    if (!deleteIntentRes.ok) {
+                        console.error(`Failed to delete domain intent: ${deleteIntentRes.status}`);
+                    } else {
+                        console.log(`Successfully deleted domain intent: ${intentName}`);
+                    }
+
+                    const deleteResponseRes = await fetch(`${API_BASE}/domain-db/responses/${domainResponseExists?.id}`, { method: 'DELETE' });
+
+                    if (!deleteResponseRes.ok) {
+                        console.error(`Failed to delete domain response: ${deleteResponseRes.status}`);
+                    } else {
+                        console.log(`Successfully deleted domain response: ${utterName}`);
+                    }
+
+                } catch (mappingError) {
+                    // If domain mapping deletion fails, log it but continue with intent deletion
+                    console.error("Error deleting domain mappings:", mappingError);
+                    // We don't want to block the intent deletion if domain mappings fail to delete
+                }
+            }
+
+            // Now delete the actual intent
             const response = await fetch(`${API_BASE}/intents/${id}`, {
                 method: 'DELETE'
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to delete intent');
+                throw new Error(errorData.error || `Failed to delete intent: ${response.status}`);
             }
+
+            // Show success message
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'success-toast';
+            messageContainer.textContent = `Intent "${intentName}" deleted successfully. ${intentData.hasDomainMapping ? 'Domain intent and utter response also deleted.' : ''}`;
+            document.body.appendChild(messageContainer);
+
+            // Remove the success message after 3 seconds
+            setTimeout(() => {
+                messageContainer.remove();
+            }, 3000);
 
             renderIntents();
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            alert(`Error deleting intent: ${error.message}`);
+            console.error("Full error:", error);
         }
+    }
+}
+
+// Function to sync an intent to domain
+async function syncToDomain(intentId, intentName) {
+    try {
+        // Create domain intent
+        const domainIntentResponse = await fetch(`${API_BASE}/domain-db/intents`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: intentName })
+        });
+
+        if (!domainIntentResponse.ok) {
+            throw new Error('Failed to create domain intent');
+        }
+
+        // Create domain response (utter_{intent_name})
+        const utterName = `utter_${intentName}`;
+        const defaultResponse = `This is a default response for ${intentName}`;
+
+        const domainResponseResponse = await fetch(`${API_BASE}/domain-db/responses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: utterName,
+                templates: [{ text: defaultResponse }]
+            })
+        });
+
+        if (!domainResponseResponse.ok) {
+            throw new Error('Failed to create domain response');
+        }
+
+        // Update the intent to mark it as having domain mapping
+        await fetch(`${API_BASE}/intents/${intentId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                hasDomainMapping: true
+            })
+        });
+
+        alert(`Successfully synced intent "${intentName}" to domain and created response "${utterName}"`);
+        renderIntents();
+    } catch (error) {
+        alert(`Error syncing to domain: ${error.message}`);
     }
 }
 
@@ -324,11 +548,37 @@ async function editIntent(id) {
         const response = await fetch(`${API_BASE}/intents/${id}`);
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to fetch intent');
+            throw new Error(`Failed to get intent details: ${response.status}`);
         }
 
         const intent = await response.json();
+        const intentName = intent.name;
+        const utterName = `utter_${intentName}`;
+
+        // Check if there's a domain intent for this intent using name-exists endpoint
+        let domainIntentExists = null;
+        try {
+            const domainIntentsRes = await fetch(`${API_BASE}/domain-db/intents/${intentName}/name-exists`);
+            domainIntentExists = await domainIntentsRes.json();
+        } catch (error) {
+            console.error("Error checking domain intent:", error);
+        }
+
+        // Check if there's a domain response for this intent using name-exists endpoint
+        let domainResponseExists = null;
+        let defaultResponse = '';
+        try {
+            const domainResponseRes = await fetch(`${API_BASE}/domain-db/responses/${utterName}/name-exists`);
+            domainResponseExists = await domainResponseRes.json();
+
+            // Get response templates if available
+            if (domainResponseExists && domainResponseExists.ResponseTemplates &&
+                domainResponseExists.ResponseTemplates.length > 0) {
+                defaultResponse = domainResponseExists.ResponseTemplates[0].text || '';
+            }
+        } catch (error) {
+            console.error("Error checking domain response:", error);
+        }
 
         // Buat form edit intent
         let html = `
@@ -337,9 +587,14 @@ async function editIntent(id) {
                 <div class="form-group">
                     <label for="editIntentName">Intent Name:</label>
                     <p class="descriptions">ganti nama intent jika perlu, abaikan jika tidak ingin mengubah nama intent, tekan tombol cancel jika ingin kembali</p>
-                    <input id="editIntentName" name="name" value="${intent.name}" required>
+                    <input id="editIntentName" name="name" value="${intentName}" required>
                 </div>
+                
                 <input type="hidden" name="id" value="${intent.id}">
+                <input type="hidden" name="hasDomainMapping" value="${intent.hasDomainMapping || false}">
+                <input type="hidden" name="domainIntentId" value="${domainIntentExists?.id || ''}">
+                <input type="hidden" name="responseId" value="${domainResponseExists?.id || ''}">
+                
                 <button type="submit" class="primary-btn">Update Intent</button>
                 <button type="button" class="cancel-btn" onclick="renderIntents()">Cancel</button>
                 <div id="edit-message" class="message"></div>
@@ -373,6 +628,30 @@ async function editIntent(id) {
         // Tambahkan style dinamis untuk tampilan edit
         document.head.insertAdjacentHTML('beforeend', `
             <style>
+                .success-toast {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #d4edda;
+                    color: #155724;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                    border-left: 5px solid #28a745;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    z-index: 1000;
+                    animation: slideIn 0.3s, fadeOut 0.5s 2.5s;
+                    max-width: 400px;
+                }
+                
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
                 .descriptions {
                     color: #6c757d;
                 }
@@ -434,18 +713,26 @@ async function editIntent(id) {
             </style>
         `);
 
-        // Handle submit form edit intent (hanya update nama intent)
+        // Handle submit form edit intent (update name dan domain mapping)
         document.getElementById('editIntentForm').onsubmit = async e => {
             e.preventDefault();
             const fd = new FormData(e.target);
             const messageEl = document.getElementById('edit-message');
+            const originalName = intentName;
+            const newName = fd.get('name');
+            const defaultResponse = fd.get('defaultResponse') || `This is a default response for ${newName}`;
+            const hasDomainMapping = fd.get('hasDomainMapping') === 'true';
+            const domainIntentId = fd.get('domainIntentId');
+            const responseId = fd.get('responseId');
 
             try {
+                // 1. Update the intent name in the main database
                 const response = await fetch(`${API_BASE}/intents/${fd.get('id')}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: fd.get('name')
+                        name: newName,
+                        hasDomainMapping: true, // Always set to true if updating domain
                     })
                 });
 
@@ -454,14 +741,86 @@ async function editIntent(id) {
                     throw new Error(errorData.error || 'Failed to update intent');
                 }
 
-                // Tampilkan pesan sukses
-                messageEl.textContent = 'Intent name updated successfully!';
-                messageEl.className = 'message success';
-                messageEl.style.display = 'block';
+                // 2. If updating domain mappings, update or create domain intent and response
+                if (true) {
+                    // Handle domain intent update/creation based on existence
+                    if (domainIntentExists && domainIntentExists.length !== 0) {
+                        // Update existing domain intent
+                        const updateIntentRes = await fetch(`${API_BASE}/domain-db/intents/${domainIntentExists.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: newName })
+                        });
 
-                // Sembunyikan pesan setelah 3 detik
+                        if (!updateIntentRes.ok) {
+                            console.error(`Failed to update domain intent: ${updateIntentRes.status}`);
+                        } else {
+                            console.log(`Successfully updated domain intent: ${originalName} -> ${newName}`);
+                        }
+                    } else {
+                        // Create new domain intent
+                        const createIntentRes = await fetch(`${API_BASE}/domain-db/intents`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: newName })
+                        });
+
+                        if (!createIntentRes.ok) {
+                            console.error(`Failed to create domain intent: ${createIntentRes.status}`);
+                        } else {
+                            console.log(`Successfully created domain intent: ${newName}`);
+                        }
+                    }
+
+                    // Handle domain response update/creation based on existence
+                    const oldUtterName = `utter_${originalName}`;
+                    const newUtterName = `utter_${newName}`;
+
+                    if (domainResponseExists && domainResponseExists.length !== 0) {
+                        // Update existing domain response
+                        const updateResponseRes = await fetch(`${API_BASE}/domain-db/responses/${domainResponseExists.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: newUtterName,
+                                templates: [{ text: defaultResponse }]
+                            })
+                        });
+
+                        if (!updateResponseRes.ok) {
+                            console.error(`Failed to update domain response: ${updateResponseRes.status}`);
+                        } else {
+                            console.log(`Successfully updated domain response: ${oldUtterName} -> ${newUtterName}`);
+                        }
+                    } else {
+                        // Create new domain response
+                        const createResponseRes = await fetch(`${API_BASE}/domain-db/responses`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: newUtterName,
+                                templates: [{ text: defaultResponse }]
+                            })
+                        });
+
+                        if (!createResponseRes.ok) {
+                            console.error(`Failed to create domain response: ${createResponseRes.status}`);
+                        } else {
+                            console.log(`Successfully created domain response: ${newUtterName}`);
+                        }
+                    }
+                }
+
+                // Show success toast
+                const messageContainer = document.createElement('div');
+                messageContainer.className = 'success-toast';
+                messageContainer.textContent = `Intent "${originalName}" updated to "${newName}". ${updateDomain ? 'Domain intent and utter response also updated.' : ''}`;
+                document.body.appendChild(messageContainer);
+
+                // Remove the success message after 3 seconds
                 setTimeout(() => {
-                    messageEl.style.display = 'none';
+                    messageContainer.remove();
+                    renderIntents();
                 }, 3000);
             } catch (error) {
                 messageEl.textContent = `Error: ${error.message}`;
@@ -475,7 +834,8 @@ async function editIntent(id) {
             }
         };
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Error deleting intent: ${error.message}`);
+        console.error("Full error:", error);
         renderIntents();
     }
 }
@@ -495,7 +855,7 @@ async function addExampleFromEdit(intentId) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                text: example,
+                text: `- ${example}`,
                 IntentId: intentId
             })
         });
@@ -536,7 +896,7 @@ async function editExample(exampleId) {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                text: newText.trim()
+                text: `- ${newText.trim()}`
             })
         });
 

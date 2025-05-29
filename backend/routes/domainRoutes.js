@@ -321,6 +321,40 @@ router.delete('/domain-db/intents/:id', async (req, res) => {
     }
 });
 
+router.get("/domain-db/intents/:name/name-exists", async (req, res) => {
+    try {
+        const { name } = req.params;
+
+        // Check if intent with this name exists
+        const existingIntent = await DomainIntent.findOne({ where: { name } });
+        if (existingIntent) {
+            return res.status(200).json(existingIntent);
+        }
+
+        res.status(200).json({ exists: false });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to check intent name' });
+    }
+});
+
+router.get("/domain-db/responses/:name/name-exists", async (req, res) => {
+    try {
+        const { name } = req.params;
+
+        // Check if response with this name exists
+        const existingResponse = await DomainResponse.findOne({ where: { name } });
+        if (existingResponse) {
+            return res.status(200).json(existingResponse);
+        }
+
+        res.status(200).json({ exists: false });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to check response name' });
+    }
+});
+
 /**
  * @swagger
  * /api/domain-db/responses:

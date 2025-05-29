@@ -157,10 +157,6 @@ async function renderDomainIntents() {
 
         let html = `
             <h3>Domain Intents</h3>
-            <form id="domainIntentForm" class="add-form">
-                <input name="name" placeholder="Intent name" required>
-                <button type="submit" class="primary-btn">Add Intent</button>
-            </form>
             
             <div class="filter-container">
                 <input type="text" id="intentFilterText" placeholder="Filter intents by name..." oninput="filterIntents()">
@@ -172,7 +168,6 @@ async function renderDomainIntents() {
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,10 +181,6 @@ async function renderDomainIntents() {
                     <tr data-name="${intent.name.toLowerCase()}">
                         <td>${intent.id}</td>
                         <td>${intent.name}</td>
-                        <td>
-                            <button class="action edit" onclick="editDomainIntent(${intent.id}, '${intent.name}')">Edit</button>
-                            <button class="action delete" onclick="deleteDomainIntent(${intent.id})">Delete</button>
-                        </td>
                     </tr>
                 `;
             });
@@ -200,17 +191,6 @@ async function renderDomainIntents() {
             </table>
         `;
         document.getElementById('domain-container').innerHTML = html;
-
-        document.getElementById('domainIntentForm').onsubmit = async e => {
-            e.preventDefault();
-            const fd = new FormData(e.target);
-            await fetch(`${API_BASE}/domain-db/intents`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: fd.get('name') })
-            });
-            renderDomainIntents();
-        };
 
         // Add filter functionality
         window.filterIntents = function () {
@@ -333,79 +313,164 @@ async function renderDomainResponses() {
     }
 }
 
-function showAddResponseForm() {
-    let html = `
-        <h4>Add New Response</h4>
-        <form id="addResponseForm" class="add-form">
-            <div class="form-group">
-                <label>Name: </label>
-                <input name="name" placeholder="e.g., utter_greet" required>
-            </div>
-            <div id="templates">
-                <div class="template">
-                    <h4>Template 1</h4>
-                    <div class="form-group">
-                        <label>Text: </label>
-                        <textarea name="text[]" rows="2" cols="40"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Buttons (JSON): </label>
-                        <textarea name="buttons[]" rows="2" cols="40" placeholder='[{"title":"Button", "payload":"/intent"}]'></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Image URL: </label>
-                        <input name="image[]" type="text">
+async function showAddResponseForm() {
+    try {
+        // Fetch all intents to populate the dropdown
+        const intentsRes = await fetch(`${API_BASE}/intents`);
+        const intents = await intentsRes.json();
+
+        // Sort intents alphabetically by name
+        intents.sort((a, b) => a.name.localeCompare(b.name));
+
+        let html = `
+            <h4>Add New Response</h4>
+            <form id="addResponseForm" class="add-form">
+                <div class="form-group">
+                    <label>Response Type:</label>
+                    <select id="responseTypeSelect" onchange="handleResponseTypeChange()">
+                        <option value="custom">Custom Response Name</option>
+                        <option value="intent" selected>Intent Response (utter_intent_name)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customNameGroup" style="display:none;">
+                    <label>Custom Name: </label>
+                    <input id="customNameInput" placeholder="e.g., utter_custom_response">
+                </div>
+                
+                <div class="form-group" id="intentSelectGroup">
+                    <label>Select Intent: </label>
+                    <select id="intentSelect">
+                        <option value="">-- Select an intent --</option>
+                        ${intents.map(intent =>
+            `<option value="${intent.name}">${intent.name}</option>`
+        ).join('')}
+                    </select>
+                </div>
+                
+                <div id="templates">
+                    <div class="template">
+                        <h4>Template 1</h4>
+                        <div class="form-group">
+                            <label>Text: </label>
+                            <textarea name="text[]" rows="2" cols="40"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Buttons (JSON): </label>
+                            <textarea name="buttons[]" rows="2" cols="40" placeholder='[{"title":"Button", "payload":"/intent"}]'></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL: </label>
+                            <input name="image[]" type="text">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <button type="button" class="primary-btn" onclick="addTemplateField()">Add Template</button>
-            <div style="margin-top: 15px;">
-                <button type="submit" class="primary-btn">Save</button>
-                <button type="button" class="clear-filter" onclick="cancelResponseForm()">Cancel</button>
-            </div>
-        </form>
-    `;
-    document.getElementById('responseFormContainer').innerHTML = html;
-    document.getElementById('responseFormContainer').style.display = 'block';
+                <button type="button" class="primary-btn" onclick="addTemplateField()">Add Template</button>
+                <div style="margin-top: 15px;">
+                    <button type="submit" class="primary-btn">Save</button>
+                    <button type="button" class="clear-filter" onclick="cancelResponseForm()">Cancel</button>
+                </div>
+            </form>
+        `;
 
-    document.getElementById('addResponseForm').onsubmit = async e => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
+        document.getElementById('responseFormContainer').innerHTML = html;
+        document.getElementById('responseFormContainer').style.display = 'block';
 
-        const name = fd.get('name');
-        const texts = fd.getAll('text[]');
-        const buttonsList = fd.getAll('buttons[]');
-        const images = fd.getAll('image[]');
+        // Add script to handle response type change
+        window.handleResponseTypeChange = function () {
+            const responseType = document.getElementById('responseTypeSelect').value;
+            if (responseType === 'custom') {
+                document.getElementById('customNameGroup').style.display = 'block';
+                document.getElementById('intentSelectGroup').style.display = 'none';
+            } else {
+                document.getElementById('customNameGroup').style.display = 'none';
+                document.getElementById('intentSelectGroup').style.display = 'block';
+            }
+        };
 
-        const templates = [];
-        for (let i = 0; i < texts.length; i++) {
-            const template = {};
-            if (texts[i]) template.text = texts[i];
+        document.getElementById('addResponseForm').onsubmit = async e => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
 
-            if (buttonsList[i]) {
-                try {
-                    template.buttons = JSON.parse(buttonsList[i]);
-                } catch (e) {
-                    alert('Invalid JSON in buttons field');
+            // Get the response name based on selection type
+            const responseType = document.getElementById('responseTypeSelect').value;
+            let name;
+
+            if (responseType === 'custom') {
+                name = document.getElementById('customNameInput').value.trim();
+                if (!name) {
+                    alert('Please enter a response name');
                     return;
                 }
+                // Add utter_ prefix if not present
+                if (!name.startsWith('utter_')) {
+                    name = 'utter_' + name;
+                }
+            } else {
+                const selectedIntent = document.getElementById('intentSelect').value;
+                if (!selectedIntent) {
+                    alert('Please select an intent');
+                    return;
+                }
+                name = `utter_${selectedIntent}`;
             }
 
-            if (images[i]) template.image = images[i];
+            const texts = fd.getAll('text[]');
+            const buttonsList = fd.getAll('buttons[]');
+            const images = fd.getAll('image[]');
 
-            templates.push(template);
-        }
+            const templates = [];
+            for (let i = 0; i < texts.length; i++) {
+                const template = {};
+                if (texts[i]) template.text = texts[i];
 
-        await fetch(`${API_BASE}/domain-db/responses`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, templates })
-        });
+                if (buttonsList[i]) {
+                    try {
+                        template.buttons = JSON.parse(buttonsList[i]);
+                    } catch (e) {
+                        alert('Invalid JSON in buttons field');
+                        return;
+                    }
+                }
 
-        renderDomainResponses();
-    };
+                if (images[i]) template.image = images[i];
+
+                templates.push(template);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/domain-db/responses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, templates })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to create response');
+                }
+
+                // Show success message
+                const messageContainer = document.createElement('div');
+                messageContainer.className = 'success-toast';
+                messageContainer.textContent = `Domain response "${name}" created successfully.`;
+                document.body.appendChild(messageContainer);
+
+                // Remove the success message after 3 seconds
+                setTimeout(() => {
+                    messageContainer.remove();
+                }, 3000);
+
+                renderDomainResponses();
+            } catch (error) {
+                alert(`Error creating response: ${error.message}`);
+            }
+        };
+    } catch (error) {
+        document.getElementById('responseFormContainer').innerHTML = `Error: ${error.message}`;
+        document.getElementById('responseFormContainer').style.display = 'block';
+    }
 }
-
 let templateCounter = 1;
 
 function addTemplateField() {
