@@ -15,10 +15,10 @@ nlu:
     - Untuk pengembangan website harganya kira kira berapa?
     - Kalo mau buat aplikasi berbasis web biaya berapa ya?
     - Berapasih harga yang dibutuhkan untuk membangun sebuah aplikasi berbasis website dalam waktu kurun 1 bulan?
-    - Pokoknya saya pengen punya website, butuh duit berapa ya?
+    - harga website
     - Ongkos buat website tuh brp ya?
     - Gue mau bikin web, kisaran harganya berapa?
-    - Kalau mau web standar doang, budget-nya sekitar brapa?
+    - harga web
     - Pokoknya web-nya simpel aja, kira-kira habis berapa?
     - Kira-kira kalau pesen web, keluar uang berapa?
     - Kalau mau jasa pembuatan web, bayarnya berapa sih?
@@ -41,19 +41,19 @@ nlu:
     - Untuk bikin aplikasi mobile lengkap, perlu anggaran berapa?
     - Kalo mau bikin aplikasi HP, kena biaya berapa?
     - Harga buat bikin app mobile di range berapa ya?
-    - Kalau buat aplikasi untuk perangkat mobile mahal gak sih? Kira-kira berapa biayanya?
+    - harga app mobile
     - Pokoknya saya mau aplikasi jalan di HP, biayanya sekitar berapa?
     - Gue pengen bikin aplikasi handphone, harganya berapa ya?
     - Ongkos buat aplikasi mobile kira-kira gimana?
     - Kalo apps-nya simpel aja, berapa duit yang dibutuhin?
     - Pokoknya mau bikin app di HP, yang penting jalan, biayanya gimana?
     - Kalau apps-nya lengkap plus database, harganya berapa ya?
-    - Buat bikin aplikasi mobile buat bisnis kecil, mahal gak?
+    - harga app hp
     - Kalau aplikasi handphone kayak marketplace gitu, estimasinya berapa?
     - Mau tau harga jasa bikin aplikasi mobile dong
     - Biaya fix atau tergantung fitur aplikasi HP-nya?
     - Kalau fitur cuma login, form, dan dashboard, berapa ya harganya?
-    - Berapa uang yang harus disiapin kalau mau bikin aplikasi untuk HP?
+    - harga app android
     - Harga buat develop aplikasi mobile full fitur kira-kira gimana?
 
 - intent: tanya_harga_pembuatan_aplikasi_ios
@@ -61,7 +61,7 @@ nlu:
     - Berapa harga untuk pembuatan aplikasi dengan basis iOS?
     - Untuk pembuatan aplikasi iOS secara keseluruhan, berapa biaya yang diperlukan?
     - Berapa harga pembuatan aplikasi di iOS?
-    - Berapa kira-kira biaya yang dibutuhkan untuk membuat aplikasi berbasis iOS?
+    - harga app iphone
     - Mas, tanya dong, kalau mau bikin aplikasi iOS, harganya berapa ya?
     - Harga untuk pembuatan aplikasi berbasis iOS berapa ya?
     - Berapa biaya yang harus saya siapkan untuk membuat aplikasi di platform iOS?
@@ -72,7 +72,7 @@ nlu:
     - Kalau aplikasi dibuat buat iOS doang, kisaran harganya berapa?
     - Kalo app-nya buat iOS aja, butuh modal berapa?
     - Gue pengen bikin app iPhone, mahal gak sih?
-    - Pokoknya mau bikin aplikasi buat iOS, kira-kira habis berapa duit?
+    - harga app iOS
     - Biaya develop aplikasi iOS itu tergantung fitur juga gak?
     - Mau bikin aplikasi yang jalan di iPhone doang, butuh dana berapa?
     - Buat bikin aplikasi di ekosistem Apple, harus siapin berapa?
@@ -440,3 +440,7 @@ nlu:
     - apa harga mobil?
     - jual rumah?
     - beli sepatu online
+    - ada cowo
+    - ada cewe
+    - cowo
+    - cewe

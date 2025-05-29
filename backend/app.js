@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Database sync & server start
+// Database sync & server start (port bebas)
 const PORT = process.env.PORT || 3000;
 
 // Sync database models if needed

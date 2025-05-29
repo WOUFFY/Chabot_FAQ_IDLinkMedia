@@ -71,8 +71,8 @@ stories:
     steps:
       - intent: tanya_harga_pembuatan_website
       - action: utter_harga_pembuatan_website
-      - intent: tanya_benefit_jasa_pt_mti
-      - action: utter_benefit_jasa_pt_mti
+      - intent: nlu_fallback
+      - action: utter_fallback
 
   - story: fallback_scenario
     steps:

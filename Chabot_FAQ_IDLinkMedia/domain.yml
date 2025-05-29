@@ -30,7 +30,7 @@ responses:
         - title: "tanya harga buat aplikasi ios"
           payload: "tanya_harga_pembuatan_aplikasi_ios"
         - title: "tanya apabila ada issue dalam aplikasi"
-          payload: "tanya_issue_dalam_aplikasi"
+          payload: "/tanya_issue_dalam_aplikasi"
 
   utter_harga_pembuatan_website:
     - text: "Untuk pembuatan website harganya sekitar Rp 2.000.000 - Rp 150.000.000 tergantung dari kebutuhan websitenya juga"

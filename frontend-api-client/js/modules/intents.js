@@ -2,26 +2,29 @@
 async function renderIntents() {
     try {
         const res = await fetch(`${API_BASE}/intents`);
+        // Mengambil data intents dari endpoint API
 
         if (!res.ok) {
             throw new Error(`Failed to fetch intents: ${res.status} ${res.statusText}`);
+            // Jika response gagal, lempar error
         }
 
         const data = await res.json();
+        // Parse response menjadi objek JavaScript
 
-        let html = `<h2>Intents</h2>
-        <p class="description">Intents represent what users want to do with your chatbot. Add examples to help the AI recognize user intentions.</p>
+        let html = `<h2>Intents Chatbot FAQ</h2>
+        <p class="description">Intents merepresentasikan maksud dari suatu pertanyaan dari user agar chatbot dapat mengenali maksud pertanyaan tertentu sesuai dari intents yang telah dimiliki. tambahkan intent baru serta example agar chatbot dapat mengenali pertanyaan baru.</p>
         <form id="intentForm" class="add-form">
             <div class="form-group">
-                <label for="intentName">Intent Name:</label>
-                <input id="intentName" name="name" placeholder="Intent name (e.g. greet, goodbye)" required>
+                <label for="intentName">Nama Intent:</label>
+                <input id="intentName" name="name" placeholder="Nama Intent (e.g. greet, goodbye)" required>
             </div>
             <div class="form-group">
                 <label for="intentExamples">Examples:</label>
                 <textarea id="intentExamples" name="examples" placeholder="Examples (comma separated, e.g. hello, hi there, greetings)" rows="3"></textarea>
                 <span class="hint">Enter comma-separated phrases that represent this intent</span>
             </div>
-            <button type="submit" class="primary-btn">Add Intent</button>
+            <button type="submit" class="primary-btn">Tambah Intent</button>
             <div id="message" class="message"></div>
         </form>
         
@@ -33,9 +36,11 @@ async function renderIntents() {
                 <th>Examples</th>
                 <th>Actions</th>
             </tr>`;
+        // Membuat form tambah intent dan header tabel
 
         if (data.length === 0) {
             html += `<tr><td colspan="4" class="no-data">No intents found. Add your first intent above.</td></tr>`;
+            // Jika belum ada intent, tampilkan pesan
         } else {
             data.forEach(i => {
                 html += `<tr>
@@ -52,21 +57,23 @@ async function renderIntents() {
                                 </li>`
                 ).join('')}
                         </ul>
-                        <button class="add-example-btn" onclick="addExample(${i.id})">+ Add Example</button>
+                        <button class="add-example-btn" onclick="addExample(${i.id})">+ Tambah Example</button>
                     </td>
                     <td>
                         <button class="action edit" onclick="editIntent(${i.id})">Edit</button>
                         <button class="action delete" onclick="deleteIntent(${i.id})">Delete</button>
                     </td>
                 </tr>`;
+                // Untuk setiap intent, tampilkan data dan tombol aksi
             });
         }
 
         html += `</table>`;
 
         document.getElementById('content').innerHTML = html;
+        // Tampilkan HTML ke elemen #content
 
-        // Add styles for the examples list and buttons
+        // Tambahkan style dinamis untuk tampilan form dan tabel
         document.head.insertAdjacentHTML('beforeend', `
             <style>
                 .description {
@@ -186,6 +193,7 @@ async function renderIntents() {
 
         document.getElementById('intentForm').onsubmit = async e => {
             e.preventDefault();
+            // Mencegah reload halaman saat submit form
             const fd = new FormData(e.target);
             const messageEl = document.getElementById('message');
 
@@ -198,33 +206,34 @@ async function renderIntents() {
                         examples: fd.get('examples') ? fd.get('examples').split(',').map(s => s.trim()).filter(s => s) : []
                     })
                 });
+                // Kirim data intent baru ke backend
 
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Failed to create intent');
                 }
 
-                // Show success message
+                // Tampilkan pesan sukses
                 messageEl.textContent = 'Intent created successfully!';
                 messageEl.className = 'message success';
                 messageEl.style.display = 'block';
 
-                // Clear form
+                // Reset form
                 e.target.reset();
 
-                // Hide message after 3 seconds
+                // Sembunyikan pesan setelah 3 detik
                 setTimeout(() => {
                     messageEl.style.display = 'none';
                 }, 3000);
 
-                // Refresh the list
+                // Refresh daftar intents
                 renderIntents();
             } catch (error) {
                 messageEl.textContent = `Error: ${error.message}`;
                 messageEl.className = 'message error';
                 messageEl.style.display = 'block';
 
-                // Hide error message after 5 seconds
+                // Sembunyikan pesan error setelah 5 detik
                 setTimeout(() => {
                     messageEl.style.display = 'none';
                 }, 5000);
@@ -238,10 +247,11 @@ async function renderIntents() {
                 <button onclick="renderIntents()">Try Again</button>
             </div>
         `;
+        // Jika error saat fetch, tampilkan pesan error
     }
 }
 
-// Add a new example to an existing intent
+// Fungsi untuk menambah contoh kalimat pada intent tertentu dalam kolom examples
 async function addExample(intentId) {
     const example = prompt('Enter the example text:');
     if (!example || !example.trim()) return;
@@ -261,13 +271,13 @@ async function addExample(intentId) {
             throw new Error(errorData.error || 'Failed to add example');
         }
 
-        renderIntents(); // Refresh to show the new example
+        renderIntents(); // Refresh tampilan
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 }
 
-// Delete a specific intent example
+// Fungsi untuk menghapus contoh kalimat pada intent dalam kolom examples
 async function deleteIntentExample(exampleId) {
     if (!confirm('Are you sure you want to delete this example?')) return;
 
@@ -281,14 +291,15 @@ async function deleteIntentExample(exampleId) {
             throw new Error(errorData.error || 'Failed to delete example');
         }
 
-        renderIntents(); // Refresh to show the updated list
+        renderIntents(); // Refresh tampilan
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 }
 
+// Fungsi untuk menghapus intent beserta semua contoh kalimatnya dalam kolom actions
 async function deleteIntent(id) {
-    if (confirm('Are you sure you want to delete this intent? This will also delete all associated examples.')) {
+    if (confirm('apakah kamu yakin ingin menghapus intent ini? Semua EXAMPLE dalam INTENT ini akan terhapus.')) {
         try {
             const response = await fetch(`${API_BASE}/intents/${id}`, {
                 method: 'DELETE'
@@ -306,9 +317,10 @@ async function deleteIntent(id) {
     }
 }
 
+// Fungsi untuk menampilkan form edit intent dalam kolom actions
 async function editIntent(id) {
     try {
-        // Fetch intent details
+        // Ambil detail intent
         const response = await fetch(`${API_BASE}/intents/${id}`);
 
         if (!response.ok) {
@@ -318,12 +330,13 @@ async function editIntent(id) {
 
         const intent = await response.json();
 
-        // Create edit form
+        // Buat form edit intent
         let html = `
             <h2>Edit Intent</h2>
             <form id="editIntentForm" class="add-form">
                 <div class="form-group">
                     <label for="editIntentName">Intent Name:</label>
+                    <p class="descriptions">ganti nama intent jika perlu, abaikan jika tidak ingin mengubah nama intent, tekan tombol cancel jika ingin kembali</p>
                     <input id="editIntentName" name="name" value="${intent.name}" required>
                 </div>
                 <input type="hidden" name="id" value="${intent.id}">
@@ -355,10 +368,14 @@ async function editIntent(id) {
         `;
 
         document.getElementById('content').innerHTML = html;
+        // Tampilkan form edit intent
 
-        // Additional styles for the edit screen
+        // Tambahkan style dinamis untuk tampilan edit
         document.head.insertAdjacentHTML('beforeend', `
             <style>
+                .descriptions {
+                    color: #6c757d;
+                }
                 .cancel-btn {
                     background-color: #6c757d;
                     color: white;
@@ -417,7 +434,7 @@ async function editIntent(id) {
             </style>
         `);
 
-        // Handle form submission - now only updates the intent name
+        // Handle submit form edit intent (hanya update nama intent)
         document.getElementById('editIntentForm').onsubmit = async e => {
             e.preventDefault();
             const fd = new FormData(e.target);
@@ -429,7 +446,6 @@ async function editIntent(id) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         name: fd.get('name')
-                        // No examples here, they're managed separately
                     })
                 });
 
@@ -438,12 +454,12 @@ async function editIntent(id) {
                     throw new Error(errorData.error || 'Failed to update intent');
                 }
 
-                // Show success message
+                // Tampilkan pesan sukses
                 messageEl.textContent = 'Intent name updated successfully!';
                 messageEl.className = 'message success';
                 messageEl.style.display = 'block';
 
-                // Hide message after 3 seconds but don't redirect
+                // Sembunyikan pesan setelah 3 detik
                 setTimeout(() => {
                     messageEl.style.display = 'none';
                 }, 3000);
@@ -452,7 +468,7 @@ async function editIntent(id) {
                 messageEl.className = 'message error';
                 messageEl.style.display = 'block';
 
-                // Hide error message after 5 seconds
+                // Sembunyikan pesan error setelah 5 detik
                 setTimeout(() => {
                     messageEl.style.display = 'none';
                 }, 5000);
@@ -464,13 +480,13 @@ async function editIntent(id) {
     }
 }
 
-// Add an example from the edit screen
+// Fungsi untuk menambah contoh kalimat dari halaman edit intent
 async function addExampleFromEdit(intentId) {
     const newExampleInput = document.getElementById('new-example');
     const example = newExampleInput.value.trim();
 
     if (!example) {
-        alert('Please enter example text');
+        alert('Tolong masukkan contoh kalimat.');
         return;
     }
 
@@ -489,20 +505,20 @@ async function addExampleFromEdit(intentId) {
             throw new Error(errorData.error || 'Failed to add example');
         }
 
-        // Clear the input field
+        // Kosongkan input setelah berhasil
         newExampleInput.value = '';
 
-        // Refresh the current edit page to show the new example
+        // Refresh halaman edit intent
         editIntent(intentId);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 }
 
-// Edit a specific example
+// Fungsi untuk mengedit contoh kalimat pada intent
 async function editExample(exampleId) {
     try {
-        // Fetch the current example
+        // Ambil data contoh kalimat
         const response = await fetch(`${API_BASE}/intent-examples/${exampleId}`);
 
         if (!response.ok) {
@@ -511,11 +527,11 @@ async function editExample(exampleId) {
 
         const example = await response.json();
 
-        // Prompt for the new text
+        // Prompt untuk input teks baru
         const newText = prompt('Edit example:', example.text);
         if (!newText || newText.trim() === example.text) return;
 
-        // Update the example
+        // Update contoh kalimat
         const updateResponse = await fetch(`${API_BASE}/intent-examples/${exampleId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -529,7 +545,7 @@ async function editExample(exampleId) {
             throw new Error(errorData.error || 'Failed to update example');
         }
 
-        // Refresh the current edit page
+        // Refresh halaman edit intent
         editIntent(example.IntentId);
     } catch (error) {
         alert(`Error: ${error.message}`);
