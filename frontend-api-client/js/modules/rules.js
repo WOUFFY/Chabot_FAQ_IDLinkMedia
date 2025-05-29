@@ -1,4 +1,3 @@
-// -------- RULES --------
 async function renderRules() {
     try {
         // Fetch data for rules and available intents/actions
@@ -37,17 +36,24 @@ async function renderRules() {
                 <input name="name" placeholder="Rule name" required>
             </div>
             
-            <h3>Steps (Must include at least one intent and one action)</h3>
+            <h3>Steps</h3>
             <div id="stepsContainer">
-                <div class="step-row">
-                    <select name="stepType[]" class="step-type" onchange="updateRuleNameOptions(this)">
-                        <option value="intent">intent</option>
-                        <option value="action">action</option>
+                <div class="form-group">
+                    <label>Intent (Trigger):</label>
+                    <select name="intentName" id="intentSelect" class="full-width" required>
+                        <option value="">-- Select an intent --</option>
+                        ${intents.map(intent => `<option value="${intent.name}">${intent.name}</option>`).join('')}
+                        <option value="custom">-- Enter custom intent --</option>
                     </select>
-                    <select name="stepName[]" class="step-name" required>
-                        <!-- Options will be populated dynamically -->
+                </div>
+                
+                <div class="form-group">
+                    <label>Action (Response):</label>
+                    <select name="actionName" id="actionSelect" class="full-width" required>
+                        <option value="">-- Select an action --</option>
+                        ${actions.map(action => `<option value="${action.name}">${action.name}</option>`).join('')}
+                        <option value="custom">-- Enter custom action --</option>
                     </select>
-                    <button type="button" class="add-step">+</button>
                 </div>
             </div>
             
@@ -66,20 +72,26 @@ async function renderRules() {
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Steps</th>
+                    <th>Intent</th>
+                    <th>Action</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>`;
 
         if (data.length === 0) {
-            html += `<tr><td colspan="4" class="no-data">No rules found. Add your first rule above.</td></tr>`;
+            html += `<tr><td colspan="5" class="no-data">No rules found. Add your first rule above.</td></tr>`;
         } else {
             data.forEach(r => {
+                const steps = r.RuleSteps || [];
+                const intentStep = steps.find(s => s.type === 'intent') || {};
+                const actionStep = steps.find(s => s.type === 'action') || {};
+
                 html += `<tr data-name="${r.name.toLowerCase()}">
                     <td>${r.id}</td>
                     <td>${r.name}</td>
-                    <td>${(r.RuleSteps || []).map(st => `${st.type}:${st.name}`).join('<br>')}</td>
+                    <td>${intentStep.name || 'N/A'}</td>
+                    <td>${actionStep.name || 'N/A'}</td>
                     <td>
                         <button class="action edit" onclick="editRule(${r.id})">Edit</button>
                         <button class="action delete" onclick="deleteRule(${r.id})">Delete</button>
@@ -113,43 +125,31 @@ async function renderRules() {
                     margin-bottom: 5px;
                     font-weight: bold;
                 }
-                .form-group input {
+                .form-group input, .form-group select {
                     width: 100%;
                     padding: 8px;
                     border-radius: 4px;
                     border: 1px solid #ced4da;
                 }
-                .step-row {
-                    display: flex;
-                    margin-bottom: 8px;
-                    align-items: center;
+                .full-width {
+                    width: 100%;
                 }
-                .step-row select, .step-row input {
-                    margin-right: 10px;
+                .step-tag {
+                    display: inline-block;
+                    margin: 2px;
+                    padding: 3px 8px;
+                    border-radius: 3px;
+                    font-size: 13px;
                 }
-                .step-type {
-                    width: 120px;
+                .step-tag.intent {
+                    background-color: #e2f0d9;
+                    color: #2e7d32;
+                    border: 1px solid #a5d6a7;
                 }
-                .step-name {
-                    flex: 1;
-                }
-                button.add-step, button.remove-step {
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-weight: bold;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-                button.add-step:hover {
-                }
-                button.remove-step {
-                }
-                button.remove-step:hover {
+                .step-tag.action {
+                    background-color: #e3f2fd;
+                    color: #1565c0;
+                    border: 1px solid #90caf9;
                 }
                 .validation-message {
                     margin-top: 10px;
@@ -162,7 +162,7 @@ async function renderRules() {
                 }
                 #stepsContainer {
                     margin-bottom: 15px;
-                    padding: 10px;
+                    padding: 15px;
                     border: 1px solid #eee;
                     background-color: #fafafa;
                     border-radius: 4px;
@@ -189,23 +189,6 @@ async function renderRules() {
                 }
                 .clear-filter:hover {
                     background-color: #5a6268;
-                }
-                .step-tag {
-                    display: inline-block;
-                    margin: 2px;
-                    padding: 3px 6px;
-                    border-radius: 3px;
-                    font-size: 12px;
-                }
-                .step-tag.intent {
-                    background-color: #e2f0d9;
-                    color: #2e7d32;
-                    border: 1px solid #a5d6a7;
-                }
-                .step-tag.action {
-                    background-color: #e3f2fd;
-                    color: #1565c0;
-                    border: 1px solid #90caf9;
                 }
                 .edit {
                     background-color: #17a2b8;
@@ -262,78 +245,74 @@ async function renderRules() {
             </style>
         `);
 
-        // Store available intents and actions for dropdowns
-        window.availableIntents = intents;
-        window.availableActions = actions;
-
-        // Initialize the first step's name options
-        updateRuleNameOptions(document.querySelector('.step-type'));
-
-        // Add event listener for the "Add Step" button
-        document.querySelector('.add-step').addEventListener('click', function () {
-            const newStep = document.createElement('div');
-            newStep.className = 'step-row';
-            newStep.innerHTML = `
-                <select name="stepType[]" class="step-type" onchange="updateRuleNameOptions(this)">
-                    <option value="intent">intent</option>
-                    <option value="action">action</option>
-                </select>
-                <select name="stepName[]" class="step-name" required>
-                    <!-- Options will be populated dynamically -->
-                </select>
-                <button type="button" class="remove-step">-</button>
-            `;
-            document.getElementById('stepsContainer').appendChild(newStep);
-
-            // Initialize the new step's name options
-            updateRuleNameOptions(newStep.querySelector('.step-type'));
-
-            // Add event listener for the remove button
-            newStep.querySelector('.remove-step').addEventListener('click', function () {
-                this.parentElement.remove();
-            });
+        // Handle custom intent selection
+        document.getElementById('intentSelect').addEventListener('change', function () {
+            if (this.value === 'custom') {
+                const customIntent = prompt('Enter a custom intent name:');
+                if (customIntent && customIntent.trim()) {
+                    // Create and add a new option
+                    const newOption = document.createElement('option');
+                    newOption.value = customIntent.trim();
+                    newOption.textContent = customIntent.trim();
+                    this.insertBefore(newOption, this.querySelector('option[value="custom"]'));
+                    this.value = customIntent.trim();
+                } else {
+                    // If canceled or empty, reset to first option
+                    this.selectedIndex = 0;
+                }
+            }
         });
 
+        // Handle custom action selection
+        document.getElementById('actionSelect').addEventListener('change', function () {
+            if (this.value === 'custom') {
+                const customAction = prompt('Enter a custom action name:');
+                if (customAction && customAction.trim()) {
+                    // Create and add a new option
+                    const newOption = document.createElement('option');
+                    newOption.value = customAction.trim();
+                    newOption.textContent = customAction.trim();
+                    this.insertBefore(newOption, this.querySelector('option[value="custom"]'));
+                    this.value = customAction.trim();
+                } else {
+                    // If canceled or empty, reset to first option
+                    this.selectedIndex = 0;
+                }
+            }
+        });
+
+        // Handle form submission
         document.getElementById('ruleForm').onsubmit = async e => {
             e.preventDefault();
             const fd = new FormData(e.target);
 
-            const types = fd.getAll('stepType[]');
-            const names = fd.getAll('stepName[]');
+            // Get form values
+            const ruleName = fd.get('name');
+            const intentName = fd.get('intentName');
+            const actionName = fd.get('actionName');
 
-            // Create steps array
-            const steps = types.map((type, index) => ({
-                type: type,
-                name: names[index]
-            })).filter(s => s.type && s.name);
-
-            // Validate that there is at least one intent and one action
-            const hasIntent = steps.some(step => step.type === 'intent');
-            const hasAction = steps.some(step => step.type === 'action');
-
+            // Validate inputs
             const validationMessage = document.getElementById('rule-validation-message');
             validationMessage.style.display = 'none';
 
-            if (!hasIntent && !hasAction) {
-                validationMessage.textContent = 'Error: Rule must include at least one intent and one action step';
-                validationMessage.style.display = 'block';
-                return;
-            } else if (!hasIntent) {
-                validationMessage.textContent = 'Error: Rule must include at least one intent step';
-                validationMessage.style.display = 'block';
-                return;
-            } else if (!hasAction) {
-                validationMessage.textContent = 'Error: Rule must include at least one action step';
+            if (!intentName || !actionName) {
+                validationMessage.textContent = 'Error: Please select both an intent and an action';
                 validationMessage.style.display = 'block';
                 return;
             }
+
+            // Create steps array with intent always first, then action
+            const steps = [
+                { type: 'intent', name: intentName },
+                { type: 'action', name: actionName }
+            ];
 
             try {
                 const response = await fetch(`${API_BASE}/rules`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: fd.get('name'),
+                        name: ruleName,
                         steps
                     })
                 });
@@ -375,60 +354,6 @@ async function renderRules() {
             </div>
         `;
     }
-}
-
-// Function to update name options based on type
-window.updateRuleNameOptions = function (typeSelect) {
-    const stepRow = typeSelect.closest('.step-row');
-    const nameSelect = stepRow.querySelector('.step-name');
-    const type = typeSelect.value;
-
-    nameSelect.innerHTML = ''; // Clear existing options
-
-    let options = [];
-    if (type === 'intent') {
-        options = window.availableIntents || [];
-    } else if (type === 'action') {
-        options = window.availableActions || [];
-    }
-
-    // Add an empty option first
-    const emptyOption = document.createElement('option');
-    emptyOption.value = '';
-    emptyOption.textContent = `Select a ${type}...`;
-    nameSelect.appendChild(emptyOption);
-
-    // Add available options
-    options.forEach(option => {
-        const optEl = document.createElement('option');
-        optEl.value = option.name;
-        optEl.textContent = option.name;
-        nameSelect.appendChild(optEl);
-    });
-
-    // Add custom option at the end
-    const customOption = document.createElement('option');
-    customOption.value = 'custom';
-    customOption.textContent = '-- Enter custom name --';
-    nameSelect.appendChild(customOption);
-
-    // Add event listener for custom option
-    nameSelect.onchange = function () {
-        if (this.value === 'custom') {
-            const customName = prompt(`Enter a custom ${type} name:`);
-            if (customName && customName.trim()) {
-                // Create and add a new option
-                const newOption = document.createElement('option');
-                newOption.value = customName.trim();
-                newOption.textContent = customName.trim();
-                nameSelect.insertBefore(newOption, nameSelect.lastChild);
-                nameSelect.value = customName.trim();
-            } else {
-                // If canceled or empty, reset to first option
-                nameSelect.selectedIndex = 0;
-            }
-        }
-    };
 }
 
 async function deleteRule(id) {
@@ -475,6 +400,10 @@ async function editRule(id) {
             console.error("Error fetching intents or actions:", error);
         }
 
+        const steps = rule.RuleSteps || [];
+        const intentStep = steps.find(s => s.type === 'intent') || { name: '' };
+        const actionStep = steps.find(s => s.type === 'action') || { name: '' };
+
         // Create edit form HTML
         let html = `<h2>Edit Rule</h2>
         <form id="editRuleForm" class="add-form">
@@ -483,40 +412,34 @@ async function editRule(id) {
                 <input name="name" value="${rule.name}" required>
             </div>
             
-            <h3>Steps (Must include at least one intent and one action)</h3>
-            <div id="editStepsContainer">`;
-
-        // Add existing steps
-        if (rule.RuleSteps && rule.RuleSteps.length > 0) {
-            rule.RuleSteps.forEach((step, index) => {
-                html += `<div class="step-row">
-                    <select name="stepType[]" class="step-type" onchange="updateEditRuleNameOptions(this)">
-                        <option value="intent" ${step.type === 'intent' ? 'selected' : ''}>intent</option>
-                        <option value="action" ${step.type === 'action' ? 'selected' : ''}>action</option>
+            <h3>Steps</h3>
+            <div id="stepsContainer">
+                <div class="form-group">
+                    <label>Intent (Trigger):</label>
+                    <select name="intentName" id="editIntentSelect" class="full-width" required>
+                        <option value="">-- Select an intent --</option>
+                        ${intents.map(intent =>
+            `<option value="${intent.name}" ${intentStep.name === intent.name ? 'selected' : ''}>${intent.name}</option>`
+        ).join('')}
+                        ${intentStep.name && !intents.some(i => i.name === intentStep.name) ?
+                `<option value="${intentStep.name}" selected>${intentStep.name} (current)</option>` : ''}
+                        <option value="custom">-- Enter custom intent --</option>
                     </select>
-                    <select name="stepName[]" class="step-name" required>
-                        <!-- Will be populated dynamically -->
+                </div>
+                
+                <div class="form-group">
+                    <label>Action (Response):</label>
+                    <select name="actionName" id="editActionSelect" class="full-width" required>
+                        <option value="">-- Select an action --</option>
+                        ${actions.map(action =>
+                    `<option value="${action.name}" ${actionStep.name === action.name ? 'selected' : ''}>${action.name}</option>`
+                ).join('')}
+                        ${actionStep.name && !actions.some(a => a.name === actionStep.name) ?
+                `<option value="${actionStep.name}" selected>${actionStep.name} (current)</option>` : ''}
+                        <option value="custom">-- Enter custom action --</option>
                     </select>
-                    ${index === 0 ?
-                        `<button type="button" class="add-step">+</button>` :
-                        `<button type="button" class="remove-step">-</button>`}
-                </div>`;
-            });
-        } else {
-            // Add at least one step row if no steps exist
-            html += `<div class="step-row">
-                <select name="stepType[]" class="step-type" onchange="updateEditRuleNameOptions(this)">
-                    <option value="intent">intent</option>
-                    <option value="action">action</option>
-                </select>
-                <select name="stepName[]" class="step-name" required>
-                    <!-- Will be populated dynamically -->
-                </select>
-                <button type="button" class="add-step">+</button>
-            </div>`;
-        }
-
-        html += `</div>
+                </div>
+            </div>
             
             <input type="hidden" name="id" value="${rule.id}">
             <button type="submit" class="primary-btn">Update Rule</button>
@@ -526,112 +449,42 @@ async function editRule(id) {
 
         document.getElementById('content').innerHTML = html;
 
-        // Store available intents and actions for edit mode
-        window.editAvailableIntents = intents;
-        window.editAvailableActions = actions;
-
-        // Function to update name options in edit mode
-        window.updateEditRuleNameOptions = function (typeSelect) {
-            const stepRow = typeSelect.closest('.step-row');
-            const nameSelect = stepRow.querySelector('.step-name');
-            const type = typeSelect.value;
-
-            nameSelect.innerHTML = ''; // Clear existing options
-
-            let options = [];
-            if (type === 'intent') {
-                options = window.editAvailableIntents || [];
-            } else if (type === 'action') {
-                options = window.editAvailableActions || [];
-            }
-
-            // Add available options
-            options.forEach(option => {
-                const optEl = document.createElement('option');
-                optEl.value = option.name;
-                optEl.textContent = option.name;
-                nameSelect.appendChild(optEl);
-            });
-
-            // Add custom option
-            const customOption = document.createElement('option');
-            customOption.value = 'custom';
-            customOption.textContent = '-- Enter custom name --';
-            nameSelect.appendChild(customOption);
-
-            // Initialize with a matching step from the rule
-            const stepIndex = Array.from(document.querySelectorAll('.step-row')).indexOf(stepRow);
-            if (rule.RuleSteps && rule.RuleSteps[stepIndex] && rule.RuleSteps[stepIndex].type === type) {
-                const currentValue = rule.RuleSteps[stepIndex].name;
-
-                // Check if the value exists in options
-                const exists = Array.from(nameSelect.options).some(opt => opt.value === currentValue);
-
-                if (!exists && currentValue) {
-                    // Add the current value if it doesn't exist in options
-                    const currentOpt = document.createElement('option');
-                    currentOpt.value = currentValue;
-                    currentOpt.textContent = `${currentValue} (current)`;
-                    nameSelect.insertBefore(currentOpt, nameSelect.firstChild);
+        // Handle custom intent selection
+        document.getElementById('editIntentSelect').addEventListener('change', function () {
+            if (this.value === 'custom') {
+                const customIntent = prompt('Enter a custom intent name:');
+                if (customIntent && customIntent.trim()) {
+                    // Create and add a new option
+                    const newOption = document.createElement('option');
+                    newOption.value = customIntent.trim();
+                    newOption.textContent = customIntent.trim();
+                    this.insertBefore(newOption, this.querySelector('option[value="custom"]'));
+                    this.value = customIntent.trim();
+                } else {
+                    // If canceled or empty, reset to previous value or first option
+                    this.value = intentStep.name || '';
+                    if (!this.value) this.selectedIndex = 0;
                 }
-
-                nameSelect.value = currentValue;
             }
-
-            // Add event listener for custom option
-            nameSelect.onchange = function () {
-                if (this.value === 'custom') {
-                    const customName = prompt(`Enter a custom ${type} name:`);
-                    if (customName && customName.trim()) {
-                        // Create and add a new option
-                        const newOption = document.createElement('option');
-                        newOption.value = customName.trim();
-                        newOption.textContent = customName.trim();
-                        nameSelect.insertBefore(newOption, nameSelect.lastChild);
-                        nameSelect.value = customName.trim();
-                    } else {
-                        // Reset to first option if canceled
-                        nameSelect.selectedIndex = 0;
-                    }
-                }
-            };
-        };
-
-        // Initialize name dropdowns for each step
-        document.querySelectorAll('.step-type').forEach(typeSelect => {
-            updateEditRuleNameOptions(typeSelect);
         });
 
-        // Add event listener for add step button
-        document.querySelector('.add-step').addEventListener('click', function () {
-            const newStep = document.createElement('div');
-            newStep.className = 'step-row';
-            newStep.innerHTML = `
-                <select name="stepType[]" class="step-type" onchange="updateEditRuleNameOptions(this)">
-                    <option value="intent">intent</option>
-                    <option value="action">action</option>
-                </select>
-                <select name="stepName[]" class="step-name" required>
-                    <!-- Will be populated dynamically -->
-                </select>
-                <button type="button" class="remove-step">-</button>
-            `;
-            document.getElementById('editStepsContainer').appendChild(newStep);
-
-            // Initialize the new step's options
-            updateEditRuleNameOptions(newStep.querySelector('.step-type'));
-
-            // Add event listener for remove button
-            newStep.querySelector('.remove-step').addEventListener('click', function () {
-                this.parentElement.remove();
-            });
-        });
-
-        // Add event listeners for all remove buttons
-        document.querySelectorAll('.remove-step').forEach(button => {
-            button.addEventListener('click', function () {
-                this.parentElement.remove();
-            });
+        // Handle custom action selection
+        document.getElementById('editActionSelect').addEventListener('change', function () {
+            if (this.value === 'custom') {
+                const customAction = prompt('Enter a custom action name:');
+                if (customAction && customAction.trim()) {
+                    // Create and add a new option
+                    const newOption = document.createElement('option');
+                    newOption.value = customAction.trim();
+                    newOption.textContent = customAction.trim();
+                    this.insertBefore(newOption, this.querySelector('option[value="custom"]'));
+                    this.value = customAction.trim();
+                } else {
+                    // If canceled or empty, reset to previous value or first option
+                    this.value = actionStep.name || '';
+                    if (!this.value) this.selectedIndex = 0;
+                }
+            }
         });
 
         // Handle form submission
@@ -639,42 +492,33 @@ async function editRule(id) {
             e.preventDefault();
             const fd = new FormData(e.target);
 
-            const types = fd.getAll('stepType[]');
-            const names = fd.getAll('stepName[]');
+            // Get form values
+            const ruleName = fd.get('name');
+            const intentName = fd.get('intentName');
+            const actionName = fd.get('actionName');
 
-            // Create steps array
-            const steps = types.map((type, index) => ({
-                type: type,
-                name: names[index]
-            })).filter(s => s.type && s.name);
-
-            // Validate steps
-            const hasIntent = steps.some(step => step.type === 'intent');
-            const hasAction = steps.some(step => step.type === 'action');
-
+            // Validate inputs
             const validationMessage = document.getElementById('edit-rule-validation-message');
             validationMessage.style.display = 'none';
 
-            if (!hasIntent && !hasAction) {
-                validationMessage.textContent = 'Error: Rule must include at least one intent and one action step';
-                validationMessage.style.display = 'block';
-                return;
-            } else if (!hasIntent) {
-                validationMessage.textContent = 'Error: Rule must include at least one intent step';
-                validationMessage.style.display = 'block';
-                return;
-            } else if (!hasAction) {
-                validationMessage.textContent = 'Error: Rule must include at least one action step';
+            if (!intentName || !actionName) {
+                validationMessage.textContent = 'Error: Please select both an intent and an action';
                 validationMessage.style.display = 'block';
                 return;
             }
+
+            // Create steps array with intent always first, then action
+            const steps = [
+                { type: 'intent', name: intentName },
+                { type: 'action', name: actionName }
+            ];
 
             try {
                 const response = await fetch(`${API_BASE}/rules/${fd.get('id')}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: fd.get('name'),
+                        name: ruleName,
                         steps
                     })
                 });

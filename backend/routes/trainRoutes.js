@@ -140,7 +140,7 @@ router.post('/train', async (req, res) => {
         }));
 
         // Generate YAML files from transformed data
-        await writeYAMLFiles({
+        const trainingData = {
             intents: transformedIntents,
             domainIntents: transformedDomainIntents,
             responses: transformedResponses,
@@ -148,15 +148,25 @@ router.post('/train', async (req, res) => {
             slots: transformedSlots,
             stories: transformedStories,
             rules: transformedRules
-        });
+        };
 
-        // Trigger Rasa training process and get model filename
-        const model = await trainRasaModel();
+        // Optionally write YAML files for reference
+        if (req.query.writeFiles === 'true') {
+            await writeYAMLFiles(trainingData);
+        }
 
-        // Return success with model information
+        // Pass training data directly to the trainer
+        const modelName = await trainRasaModel(trainingData);
+
+        // Load the model into Rasa server
+        console.log(`Loading model ${modelName} into Rasa server...`);
+        const loadResult = await loadRasaModel(modelName);
+
+        // Return success response
         res.status(200).json({
-            message: 'Training complete using database configuration',
-            model,
+            message: 'Training complete and model loaded successfully',
+            model: modelName,
+            loadResult,
             stats: {
                 intents: intents.length,
                 domainIntents: domainIntents.length,
