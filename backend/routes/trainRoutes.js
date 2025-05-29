@@ -31,19 +31,6 @@ const safelyGetData = async (modelName, includeModel = null, includeOptions = {}
     }
 };
 
-/**
- * @swagger
- * /api/train:
- *   post:
- *     summary: Train a new Rasa model
- *     description: Loads data from DB, generates YAML files, triggers Rasa training, and saves the model
- *     tags: [Training]
- *     responses:
- *       200:
- *         description: Training completed successfully
- *       500:
- *         description: Training failed
- */
 router.post('/train', async (req, res) => {
     try {
         console.log('Starting training data collection from database...');
@@ -60,6 +47,7 @@ router.post('/train', async (req, res) => {
         const StoryStep = getModelSafely('StoryStep');
         const Rule = getModelSafely('Rule');
         const RuleStep = getModelSafely('RuleStep');
+        const SessionConfig = getModelSafely('SessionConfig');
 
         // Load data, safely handling missing models
         const intents = Intent ? await safelyGetData('Intent', IntentExample) : [];
@@ -70,6 +58,31 @@ router.post('/train', async (req, res) => {
         const domainSlots = DomainSlot ? await safelyGetData('DomainSlot') : [];
         const stories = Story ? await safelyGetData('Story', StoryStep) : [];
         const rules = Rule ? await safelyGetData('Rule', RuleStep) : [];
+
+        // Get session configuration
+        let sessionConfig = {
+            session_expiration_time: 60,
+            carry_over_slots_to_new_session: true
+        };
+
+        if (SessionConfig) {
+            try {
+                const sessionConfigData = await SessionConfig.findOne({ where: { id: 1 } });
+                if (sessionConfigData) {
+                    sessionConfig = {
+                        session_expiration_time: sessionConfigData.session_expiration_time,
+                        carry_over_slots_to_new_session: sessionConfigData.carry_over_slots_to_new_session
+                    };
+                    console.log('Loaded session config:', sessionConfig);
+                } else {
+                    console.log('No session config found, using default');
+                }
+            } catch (error) {
+                console.warn('Could not load session config:', error.message);
+            }
+        } else {
+            console.log('SessionConfig model not found, using default session config');
+        }
 
         console.log(`Fetched data: ${intents.length} intents, ${domainResponses.length} responses, ${stories.length} stories, ${rules.length} rules`);
 
@@ -147,7 +160,8 @@ router.post('/train', async (req, res) => {
             actions: transformedActions,
             slots: transformedSlots,
             stories: transformedStories,
-            rules: transformedRules
+            rules: transformedRules,
+            sessionConfig: sessionConfig
         };
 
         // Optionally write YAML files for reference
@@ -175,7 +189,8 @@ router.post('/train', async (req, res) => {
                 slots: Object.keys(transformedSlots).length,
                 stories: stories.length,
                 rules: rules.length
-            }
+            },
+            sessionConfig
         });
     } catch (err) {
         console.error('Training error:', err);
@@ -186,6 +201,7 @@ router.post('/train', async (req, res) => {
         });
     }
 });
+
 
 /**
  * @swagger
@@ -216,6 +232,7 @@ router.post('/generate-yaml', async (req, res) => {
         const StoryStep = getModelSafely('StoryStep');
         const Rule = getModelSafely('Rule');
         const RuleStep = getModelSafely('RuleStep');
+        const SessionConfig = getModelSafely('SessionConfig');
 
         // Load data, safely handling missing models
         const intents = Intent ? await safelyGetData('Intent', IntentExample) : [];
@@ -226,6 +243,31 @@ router.post('/generate-yaml', async (req, res) => {
         const domainSlots = DomainSlot ? await safelyGetData('DomainSlot') : [];
         const stories = Story ? await safelyGetData('Story', StoryStep) : [];
         const rules = Rule ? await safelyGetData('Rule', RuleStep) : [];
+
+        // Get session configuration
+        let sessionConfig = {
+            session_expiration_time: 60,
+            carry_over_slots_to_new_session: true
+        };
+
+        if (SessionConfig) {
+            try {
+                const sessionConfigData = await SessionConfig.findOne({ where: { id: 1 } });
+                if (sessionConfigData) {
+                    sessionConfig = {
+                        session_expiration_time: sessionConfigData.session_expiration_time,
+                        carry_over_slots_to_new_session: sessionConfigData.carry_over_slots_to_new_session
+                    };
+                    console.log('Loaded session config:', sessionConfig);
+                } else {
+                    console.log('No session config found, using default');
+                }
+            } catch (error) {
+                console.warn('Could not load session config:', error.message);
+            }
+        } else {
+            console.log('SessionConfig model not found, using default session config');
+        }
 
         console.log(`Fetched data: ${intents.length} intents, ${domainResponses.length} responses, ${stories.length} stories, ${rules.length} rules`);
 
@@ -303,7 +345,8 @@ router.post('/generate-yaml', async (req, res) => {
             actions: transformedActions,
             slots: transformedSlots,
             stories: transformedStories,
-            rules: transformedRules
+            rules: transformedRules,
+            sessionConfig: sessionConfig
         });
 
         // Return success with stats
@@ -318,7 +361,8 @@ router.post('/generate-yaml', async (req, res) => {
                 slots: Object.keys(transformedSlots).length,
                 stories: stories.length,
                 rules: rules.length
-            }
+            },
+            sessionConfig
         });
     } catch (err) {
         console.error('YAML generation error:', err);

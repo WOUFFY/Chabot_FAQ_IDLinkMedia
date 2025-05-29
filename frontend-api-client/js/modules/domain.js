@@ -243,8 +243,6 @@ async function renderDomainResponses() {
 
         let html = `
             <h3>Domain Responses</h3>
-            <button onclick="showAddResponseForm()" class="primary-btn">Add Response</button>
-            <div id="responseFormContainer" style="display:none;"></div>
             
             <div class="filter-container">
                 <input type="text" id="responseFilterText" placeholder="Filter responses by name..." oninput="filterResponses()">

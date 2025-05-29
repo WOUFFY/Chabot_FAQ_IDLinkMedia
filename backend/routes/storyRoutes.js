@@ -137,21 +137,55 @@ router.get('/stories/:id', async (req, res) => {
 router.post('/stories', async (req, res) => {
     try {
         const { name, steps } = req.body;
-        if (!name) {
-            return res.status(400).json({ error: 'Story name is required' });
+
+        // Validate required fields
+        if (!name || !steps || !Array.isArray(steps) || steps.length === 0) {
+            return res.status(400).json({ error: 'Story name and steps are required' });
         }
 
+        // Validate step sequence
+        let isValid = true;
+        let errorMessage = '';
+
+        // Story must start with intent
+        if (steps[0].type !== 'intent') {
+            isValid = false;
+            errorMessage = 'Story must start with an intent';
+        }
+
+        // Check for consecutive intents
+        for (let i = 1; i < steps.length; i++) {
+            if (steps[i].type === 'intent' && steps[i - 1].type === 'intent') {
+                isValid = false;
+                errorMessage = 'Cannot have consecutive intents in a story';
+                break;
+            }
+        }
+
+        if (!isValid) {
+            return res.status(400).json({ error: errorMessage });
+        }
+
+        // Create the story
         const story = await Story.create({ name });
 
-        // Create steps if provided
-        if (steps && Array.isArray(steps)) {
-            await Promise.all(steps.map(step =>
-                StoryStep.create({ ...step, StoryId: story.id })
-            ));
-        }
+        // Create associated steps with proper order
+        const storySteps = await Promise.all(
+            steps.map((step, index) =>
+                StoryStep.create({
+                    type: step.type,
+                    name: step.name,
+                    order: step.order !== undefined ? step.order : index,
+                    StoryId: story.id
+                })
+            )
+        );
 
-        const createdStory = await Story.findByPk(story.id, { include: StoryStep });
-        res.status(201).json(createdStory);
+        res.status(201).json({
+            id: story.id,
+            name: story.name,
+            StorySteps: storySteps
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to create story' });
@@ -204,32 +238,67 @@ router.post('/stories', async (req, res) => {
  */
 router.put('/stories/:id', async (req, res) => {
     try {
+        const { id } = req.params;
         const { name, steps } = req.body;
-        const storyId = req.params.id;
 
-        const story = await Story.findByPk(storyId);
+        // Validate required fields
+        if (!name || !steps || !Array.isArray(steps) || steps.length === 0) {
+            return res.status(400).json({ error: 'Story name and steps are required' });
+        }
+
+        // Validate step sequence
+        let isValid = true;
+        let errorMessage = '';
+
+        // Story must start with intent
+        if (steps[0].type !== 'intent') {
+            isValid = false;
+            errorMessage = 'Story must start with an intent';
+        }
+
+        // Check for consecutive intents
+        for (let i = 1; i < steps.length; i++) {
+            if (steps[i].type === 'intent' && steps[i - 1].type === 'intent') {
+                isValid = false;
+                errorMessage = 'Cannot have consecutive intents in a story';
+                break;
+            }
+        }
+
+        if (!isValid) {
+            return res.status(400).json({ error: errorMessage });
+        }
+
+        // Find the story
+        const story = await Story.findByPk(id);
         if (!story) {
             return res.status(404).json({ error: 'Story not found' });
         }
 
-        // Update story name if provided
-        if (name) {
-            await story.update({ name });
-        }
+        // Update the story name
+        story.name = name;
+        await story.save();
 
-        // Update steps if provided
-        if (steps && Array.isArray(steps)) {
-            // First delete existing steps
-            await StoryStep.destroy({ where: { StoryId: storyId } });
+        // Delete existing steps
+        await StoryStep.destroy({ where: { StoryId: id } });
 
-            // Then create new steps
-            await Promise.all(steps.map(step =>
-                StoryStep.create({ ...step, StoryId: storyId })
-            ));
-        }
+        // Create new steps with proper order
+        const storySteps = await Promise.all(
+            steps.map((step, index) =>
+                StoryStep.create({
+                    type: step.type,
+                    name: step.name,
+                    order: step.order !== undefined ? step.order : index,
+                    StoryId: story.id
+                })
+            )
+        );
 
-        const updatedStory = await Story.findByPk(storyId, { include: StoryStep });
-        res.status(200).json(updatedStory);
+        res.status(200).json({
+            id: story.id,
+            name: story.name,
+            StorySteps: storySteps
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update story' });

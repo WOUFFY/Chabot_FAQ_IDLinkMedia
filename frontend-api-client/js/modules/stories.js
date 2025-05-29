@@ -76,15 +76,23 @@ async function renderStories() {
             html += `<tr><td colspan="4" class="no-data">No stories found. Add your first story above.</td></tr>`;
         } else {
             data.forEach(s => {
+                // First ensure steps are sorted by order
+                const sortedSteps = (s.StorySteps || []).sort((a, b) => a.order - b.order);
+
+                // Format steps for display
+                const formattedSteps = sortedSteps.map(st => {
+                    return `${st.type}:${st.name}`;
+                }).join('<br>');
+
                 html += `<tr data-name="${s.name.toLowerCase()}">
-                    <td>${s.id}</td>
-                    <td>${s.name}</td>
-                    <td>${(s.StorySteps || []).map(st => `${st.type}:${st.name}`).join('<br>')}</td>
-                    <td>
-                        <button class="action edit" onclick="editStory(${s.id})">Edit</button>
-                        <button class="action delete" onclick="deleteStory(${s.id})">Delete</button>
-                    </td>
-                </tr>`;
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${formattedSteps}</td>
+                            <td>
+                                <button class="action edit" onclick="editStory(${s.id})">Edit</button>
+                                <button class="action delete" onclick="deleteStory(${s.id})">Delete</button>
+                            </td>
+                        </tr>`;
             });
         }
         html += `</tbody></table>`;
@@ -268,15 +276,37 @@ async function renderStories() {
             const types = fd.getAll('stepType[]');
             const names = fd.getAll('stepName[]');
 
-            // Create steps array
+            // Create steps array with order
             const steps = types.map((type, index) => ({
                 type: type,
-                name: names[index]
+                name: names[index],
+                order: index // Add explicit order
             })).filter(s => s.type && s.name);
 
             // Validate that there is at least one intent and one action
             const hasIntent = steps.some(step => step.type === 'intent');
             const hasAction = steps.some(step => step.type === 'action');
+
+            // Check for proper sequence
+            let properSequence = true;
+            let lastType = null;
+            for (let i = 0; i < steps.length; i++) {
+                const currentType = steps[i].type;
+
+                // First step should be intent
+                if (i === 0 && currentType !== 'intent') {
+                    properSequence = false;
+                    break;
+                }
+
+                // Can't have two intents in a row
+                if (currentType === 'intent' && lastType === 'intent') {
+                    properSequence = false;
+                    break;
+                }
+
+                lastType = currentType;
+            }
 
             const validationMessage = document.getElementById('story-validation-message');
             validationMessage.style.display = 'none';
@@ -291,6 +321,10 @@ async function renderStories() {
                 return;
             } else if (!hasAction) {
                 validationMessage.textContent = 'Error: Story must include at least one action step';
+                validationMessage.style.display = 'block';
+                return;
+            } else if (!properSequence) {
+                validationMessage.textContent = 'Error: Story must have proper sequence. Start with an intent, and avoid consecutive intents.';
                 validationMessage.style.display = 'block';
                 return;
             }
@@ -445,6 +479,11 @@ async function editStory(id) {
             console.error("Error fetching intents or actions:", error);
         }
 
+        // Sort steps by order to ensure they're in the correct sequence
+        if (story.StorySteps) {
+            story.StorySteps.sort((a, b) => a.order - b.order);
+        }
+
         // Create edit form HTML
         let html = `<h2>Edit Story</h2>
         <form id="editStoryForm" class="add-form">
@@ -459,7 +498,7 @@ async function editStory(id) {
         // Add existing steps
         if (story.StorySteps && story.StorySteps.length > 0) {
             story.StorySteps.forEach((step, index) => {
-                html += `<div class="step-row">
+                html += `<div class="step-row" data-order="${step.order}">
                     <select name="stepType[]" class="step-type" onchange="updateEditStoryNameOptions(this)">
                         <option value="intent" ${step.type === 'intent' ? 'selected' : ''}>intent</option>
                         <option value="action" ${step.type === 'action' ? 'selected' : ''}>action</option>
@@ -474,7 +513,7 @@ async function editStory(id) {
             });
         } else {
             // Add at least one step row if no steps exist
-            html += `<div class="step-row">
+            html += `<div class="step-row" data-order="0">
                 <select name="stepType[]" class="step-type" onchange="updateEditStoryNameOptions(this)">
                     <option value="intent">intent</option>
                     <option value="action">action</option>
@@ -510,6 +549,11 @@ async function editStory(id) {
                 }
                 .cancel-btn:hover {
                     background-color: #5a6268;
+                }
+                .step-order-info {
+                    margin-left: 10px;
+                    color: #6c757d;
+                    font-size: 12px;
                 }
             </style>
         `);
@@ -592,8 +636,18 @@ async function editStory(id) {
 
         // Add event listener for add step button
         document.querySelector('.add-step').addEventListener('click', function () {
+            // Get max order and increment by 1
+            let maxOrder = 0;
+            document.querySelectorAll('.step-row').forEach(row => {
+                const order = parseInt(row.getAttribute('data-order') || '0');
+                maxOrder = Math.max(maxOrder, order);
+            });
+
+            const newOrder = maxOrder + 1;
+
             const newStep = document.createElement('div');
             newStep.className = 'step-row';
+            newStep.setAttribute('data-order', newOrder);
             newStep.innerHTML = `
                 <select name="stepType[]" class="step-type" onchange="updateEditStoryNameOptions(this)">
                     <option value="intent">intent</option>
@@ -630,15 +684,46 @@ async function editStory(id) {
             const types = fd.getAll('stepType[]');
             const names = fd.getAll('stepName[]');
 
-            // Create steps array
-            const steps = types.map((type, index) => ({
-                type: type,
-                name: names[index]
-            })).filter(s => s.type && s.name);
+            // Get step rows to preserve order
+            const stepRows = document.querySelectorAll('.step-row');
 
-            // Validate steps
+            // Create steps array with order preserved
+            const steps = Array.from(stepRows).map((row, index) => {
+                const rowIndex = index;
+                return {
+                    type: types[rowIndex],
+                    name: names[rowIndex],
+                    order: parseInt(row.getAttribute('data-order')) || index
+                };
+            }).filter(s => s.type && s.name);
+
+            // Sort steps by order before sending to API
+            steps.sort((a, b) => a.order - b.order);
+
+            // Validate intents and actions
             const hasIntent = steps.some(step => step.type === 'intent');
             const hasAction = steps.some(step => step.type === 'action');
+
+            // Additional validation for correct sequence (intent followed by action)
+            let properSequence = true;
+            let lastType = null;
+            for (let i = 0; i < steps.length; i++) {
+                const currentType = steps[i].type;
+
+                // First step should be intent
+                if (i === 0 && currentType !== 'intent') {
+                    properSequence = false;
+                    break;
+                }
+
+                // Can't have two intents in a row
+                if (currentType === 'intent' && lastType === 'intent') {
+                    properSequence = false;
+                    break;
+                }
+
+                lastType = currentType;
+            }
 
             const validationMessage = document.getElementById('edit-story-validation-message');
             validationMessage.style.display = 'none';
@@ -653,6 +738,10 @@ async function editStory(id) {
                 return;
             } else if (!hasAction) {
                 validationMessage.textContent = 'Error: Story must include at least one action step';
+                validationMessage.style.display = 'block';
+                return;
+            } else if (!properSequence) {
+                validationMessage.textContent = 'Error: Story must have proper sequence. Start with an intent, and avoid consecutive intents.';
                 validationMessage.style.display = 'block';
                 return;
             }

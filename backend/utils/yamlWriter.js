@@ -25,7 +25,8 @@ const writeYAMLFiles = async ({
     actions = [],
     slots = {},
     stories = [],
-    rules = []
+    rules = [],
+    sessionConfig = null
 }) => {
     console.log('Starting to write YAML files...');
 
@@ -47,12 +48,10 @@ const writeYAMLFiles = async ({
         responses: responses.reduce((acc, r) => {
             acc[r.name] = r.templates;
             return acc;
-        }, {}),
-        actions: actions.length > 0 ? actions : [],
-        slots: slots
+        }, {})
     };
 
-    // Dump YAML seperti biasa
+    // Generate YAML without session_config first
     let domainYAML = yaml.dump(domainContent, { lineWidth: -1, indent: 2 });
 
     // Tambahkan baris kosong antar blok utama agar tidak rapat
@@ -60,7 +59,14 @@ const writeYAMLFiles = async ({
         .replace(/^(version: .*)$/m, '$1\n')
         .replace(/^(intents:([\s\S]*?))(?=responses:)/m, '$1\n')
         .replace(/^(responses:([\s\S]*?))(?=actions:)/m, '$1\n')
-        .replace(/^(actions:([\s\S]*?))(?=slots:)/m, '$1\n');
+
+    // Add session_config with proper spacing manually
+    if (sessionConfig) {
+        // Add extra line break before session_config
+        domainYAML += '\nsession_config:\n';
+        domainYAML += `  session_expiration_time: ${sessionConfig.session_expiration_time}\n`;
+        domainYAML += `  carry_over_slots_to_new_session: ${sessionConfig.carry_over_slots_to_new_session}\n`;
+    }
 
     // Tulis hasil YAML yang sudah diberi spasi ke file
     fs.writeFileSync(domainPath, domainYAML);
