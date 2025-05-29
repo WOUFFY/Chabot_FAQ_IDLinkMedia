@@ -1,5 +1,4 @@
 version: "3.1"
-
 nlu:
 - intent: tanya_harga_pembuatan_website
   examples: |
@@ -83,7 +82,7 @@ nlu:
     - Kalo cuma pengen app iOS buat bisnis kecil, biayanya gimana?
     - Harga jasa bikin aplikasi iOS full fitur sekarang berapa-an?
     - Kalau cuma iOS aja tanpa Android, ongkosnya lebih mahal nggak?
-    
+
 - intent: tanya_layanan_pt_mti
   examples: |
     - Apa saja layanan yang tersedia di PT Media Teknologi Informatika?
@@ -444,3 +443,7 @@ nlu:
     - ada cewe
     - cowo
     - cewe
+
+- intent: test_intent
+  examples: |
+    

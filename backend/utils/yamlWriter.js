@@ -52,12 +52,23 @@ const writeYAMLFiles = async ({
         slots: slots
     };
 
-    fs.writeFileSync(domainPath, yaml.dump(domainContent, { lineWidth: -1 }));
+    // Dump YAML seperti biasa
+    let domainYAML = yaml.dump(domainContent, { lineWidth: -1, indent: 2 });
+
+    // Tambahkan baris kosong antar blok utama agar tidak rapat
+    domainYAML = domainYAML
+        .replace(/^(version: .*)$/m, '$1\n')
+        .replace(/^(intents:([\s\S]*?))(?=responses:)/m, '$1\n')
+        .replace(/^(responses:([\s\S]*?))(?=actions:)/m, '$1\n')
+        .replace(/^(actions:([\s\S]*?))(?=slots:)/m, '$1\n');
+
+    // Tulis hasil YAML yang sudah diberi spasi ke file
+    fs.writeFileSync(domainPath, domainYAML);
 
     // Write nlu.yml with the original format
     console.log('Writing nlu.yml');
     const nluYaml = `version: "3.1"\nnlu:\n${intents.map(intent => (
-        `- intent: ${intent.name}\n  examples: |\n    ${intent.examples.map(e => `- ${e}`).join('\n    ')}`
+        `- intent: ${intent.name}\n  examples: |\n    ${intent.examples.map(e => `${e}`).join('\n    ')}`
     )).join('\n\n')}`;
 
     fs.writeFileSync(nluPath, nluYaml);

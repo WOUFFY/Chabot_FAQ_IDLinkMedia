@@ -1,4 +1,4 @@
-version: "3.1"
+version: '3.1'
 
 intents:
   - tanya_harga_pembuatan_website
@@ -18,68 +18,55 @@ intents:
   - tanya_harga_laptop_anak
   - greet
   - nlu_fallback
+  - test_intent
 
 responses:
   utter_greet:
-    - text: "Halo, apa yang dapat saya bantu?"
+    - text: Halo, apa yang dapat saya bantu?
       buttons:
-        - title: "tanya harga buat website"
-          payload: "tanya_harga_pembuatan_website"
-        - title: "tanya harga buat aplikasi android"
-          payload: "tanya_harga_pembuatan_aplikasi_android"
-        - title: "tanya harga buat aplikasi ios"
-          payload: "tanya_harga_pembuatan_aplikasi_ios"
-        - title: "tanya apabila ada issue dalam aplikasi"
-          payload: "/tanya_issue_dalam_aplikasi"
-
+        - title: tanya harga buat website
+          payload: tanya_harga_pembuatan_website
+        - title: tanya harga buat aplikasi android
+          payload: tanya_harga_pembuatan_aplikasi_android
+        - title: tanya harga buat aplikasi ios
+          payload: tanya_harga_pembuatan_aplikasi_ios
+        - title: tanya apabila ada issue dalam aplikasi
+          payload: /tanya_issue_dalam_aplikasi
   utter_harga_pembuatan_website:
-    - text: "Untuk pembuatan website harganya sekitar Rp 2.000.000 - Rp 150.000.000 tergantung dari kebutuhan websitenya juga"
-
+    - text: Untuk pembuatan website harganya sekitar Rp 2.000.000 - Rp 150.000.000 tergantung dari kebutuhan websitenya juga
   utter_harga_pembuatan_aplikasi_android:
-    - text: "Pembuatan aplikasi Android biasanya di harga Rp 5.000.000 - Rp 15.000.000 tergantung dari kebutuhan aplikasinya"
-
+    - text: Pembuatan aplikasi Android biasanya di harga Rp 5.000.000 - Rp 15.000.000 tergantung dari kebutuhan aplikasinya
   utter_harga_pembuatan_aplikasi_ios:
-    - text: "Untuk IOS di harga Rp 5.000.000 - Rp 15.000.000, mirip dengan Android harganya. tetapi tergantung kebutuhan dan fitur yang diperlukan"
-
+    - text: Untuk IOS di harga Rp 5.000.000 - Rp 15.000.000, mirip dengan Android harganya. tetapi tergantung kebutuhan dan fitur yang diperlukan
   utter_layanan_pt_mti:
-    - text: "PT Media Teknologi Informatika menyediakan layanan pembuatan website, aplikasi mobile, dan solusi IT lainnya seperti keamanan internet & jaringan, hosting, dan email services"
-
+    - text: PT Media Teknologi Informatika menyediakan layanan pembuatan website, aplikasi mobile, dan solusi IT lainnya seperti keamanan internet & jaringan, hosting, dan email services
   utter_pelatihan_aplikasi_jadi:
-    - text: "Ya, kami menyediakan pelatihan atau training untuk penggunaan aplikasi yang telah kami buat"
-
+    - text: Ya, kami menyediakan pelatihan atau training untuk penggunaan aplikasi yang telah kami buat
   utter_issue_dalam_aplikasi:
-    - text: "Jika ada issue dalam aplikasi, kami memiliki layanan cust care 24 jam dan kami memberikan layanan manage service hubungi nomor 081283270843 atau email ke info@idlinkmedia.com untuk memastikan kepuasan pelanggan jika terjadi issue, akan segera trouble shoot oleh tim profesional"
-
+    - text: Jika ada issue dalam aplikasi, kami memiliki layanan cust care 24 jam dan kami memberikan layanan manage service hubungi nomor 081283270843 atau email ke info@idlinkmedia.com untuk memastikan kepuasan pelanggan jika terjadi issue, akan segera trouble shoot oleh tim profesional
   utter_kompatibilitas_perangkat:
-    - text: "Untuk hal tersebut kami membutuhkan survey terlebih dahulu untuk memastikan bahwa perangkat yg digunakan bisa mendukung kinerja sistem baru"
-
+    - text: Untuk hal tersebut kami membutuhkan survey terlebih dahulu untuk memastikan bahwa perangkat yg digunakan bisa mendukung kinerja sistem baru
   utter_durasi_kontrak_berlangganan:
-    - text: "Untuk kontrak berlangganan minimal selama satu tahun"
-
+    - text: Untuk kontrak berlangganan minimal selama satu tahun
   utter_metode_pembayaran:
-    - text: "Untuk pembayaran silahkan ditransfer ke rekening Bank Mandiri, atas nama PT. MTI dengan nomor rekening ************* mohon informasi jika telah melakukan pembayaran, terimakasih"
-
+    - text: Untuk pembayaran silahkan ditransfer ke rekening Bank Mandiri, atas nama PT. MTI dengan nomor rekening ************* mohon informasi jika telah melakukan pembayaran, terimakasih
   utter_aktif_tidak_nomor_wa:
-    - text: "Nomer hp yang tertera pada email sampai saat ini masih aktif, silahkan menghubungi kami via WA atau telepon langsung jika ada hal - hal yang ingin ditanyakan terimakasih"
-
+    - text: Nomer hp yang tertera pada email sampai saat ini masih aktif, silahkan menghubungi kami via WA atau telepon langsung jika ada hal - hal yang ingin ditanyakan terimakasih
   utter_invoice_pdf_via_wa:
-    - text: "Ya, kami bisa mengirimkan invoice melalui WhatsApp dalam format PDF"
-
+    - text: Ya, kami bisa mengirimkan invoice melalui WhatsApp dalam format PDF
   utter_benefit_jasa_pt_mti:
-    - text: "Kami menyediakan layanan dengan SLA 99,95% uptime dan sistem yang dirancang untuk mengotomatisasi pekerjaan Anda, sehingga aktivitas harian menjadi lebih efisien dan produktif."
-
+    - text: Kami menyediakan layanan dengan SLA 99,95% uptime dan sistem yang dirancang untuk mengotomatisasi pekerjaan Anda, sehingga aktivitas harian menjadi lebih efisien dan produktif.
   utter_konfigurasi_email_perangkat_berbeda:
-    - text: "Ya, anda bisa menggunakan email yang sama pada beberapa perangkat dengan konfigurasi yang tepat"
-
+    - text: Ya, anda bisa menggunakan email yang sama pada beberapa perangkat dengan konfigurasi yang tepat
   utter_harga_upgrade_memori:
-    - text: "Harga memori kisaran 200-300 ribu tergantung dari kapasitas memori yang diinginkan serta merk memori yang diinginkan"
-  
+    - text: Harga memori kisaran 200-300 ribu tergantung dari kapasitas memori yang diinginkan serta merk memori yang diinginkan
   utter_harga_laptop_anak:
-    - text: "Harga laptop anak-anak bervariasi biasanya di kisaran 4-6 juta tergantung dari spesifikasi laptop yang dibutuhkan"
-  
+    - text: Harga laptop anak-anak bervariasi biasanya di kisaran 4-6 juta tergantung dari spesifikasi laptop yang dibutuhkan
   utter_fallback:
-    - text: "Maaf, saya tidak mengerti pertanyaan Anda. Silahkan hubungi kontak customer service kami pada nomor 081283270843 atau email ke info@idlinkmedia.com"
+    - text: Maaf, saya tidak mengerti pertanyaan Anda. Silahkan hubungi kontak customer service kami pada nomor 081283270843 atau email ke info@idlinkmedia.com
+  utter_test_intent:
+    - text: ini adalah respons test intent
 
-session_config:
-  session_expiration_time: 60 #Jika user tidak mengirim pesan selama 60 menit, maka sesi dianggap selesai. Jika user kembali setelah itu, maka sesi baru akan dibuat.
-  carry_over_slots_to_new_session: true
+actions: []
+
+slots: {}
