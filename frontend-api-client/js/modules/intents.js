@@ -783,7 +783,7 @@ async function editIntent(id) {
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 name: newUtterName,
-                                templates: [{ text: defaultResponse }]
+                                // templates: [{ text: defaultResponse }]
                             })
                         });
 
@@ -814,7 +814,7 @@ async function editIntent(id) {
                 // Show success toast
                 const messageContainer = document.createElement('div');
                 messageContainer.className = 'success-toast';
-                messageContainer.textContent = `Intent "${originalName}" updated to "${newName}". ${updateDomain ? 'Domain intent and utter response also updated.' : ''}`;
+                // messageContainer.textContent = `Intent "${originalName}" updated to "${newName}". ${updateDomain ? 'Domain intent and utter response also updated.' : ''}`;
                 document.body.appendChild(messageContainer);
 
                 // Remove the success message after 3 seconds
