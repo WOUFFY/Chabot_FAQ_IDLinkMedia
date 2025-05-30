@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const yaml = require('js-yaml');
 
 /**
  * Trains a Rasa model using the API with data from database
  * @param {Object} trainingData - Training data from database
+ * @param {Object} trainingData.config - Configuration settings
  * @param {Array} trainingData.intents - Intent data with examples
  * @param {Array} trainingData.domainIntents - Domain intents list
  * @param {Object} trainingData.responses - Response templates
@@ -12,6 +14,7 @@ const axios = require('axios');
  * @param {Object} trainingData.slots - Slot configurations
  * @param {Array} trainingData.stories - Stories with steps
  * @param {Array} trainingData.rules - Rules with steps
+ * @param {Object} trainingData.sessionConfig - Session configuration
  * @returns {Promise<string>} The name of the trained model file
  */
 const trainRasaModel = async (trainingData = null) => {
@@ -23,19 +26,27 @@ const trainRasaModel = async (trainingData = null) => {
         if (trainingData) {
             console.log('Using provided training data from database');
 
-            // Read config from file (config usually doesn't change often)
-            const configPath = path.join(__dirname, '../../config.yml');
-            if (!fs.existsSync(configPath)) {
-                throw new Error(`Config file not found at ${configPath}`);
+            // Generate config data from database configuration
+            if (trainingData.config) {
+                configData = generateConfigYaml(trainingData.config);
+                console.log(`Using configuration from database: language=${trainingData.config.language}, recipe=${trainingData.config.recipe}`);
+            } else {
+                // Read config from file as fallback
+                const configPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/config.yml');
+                if (!fs.existsSync(configPath)) {
+                    throw new Error(`Config file not found at ${configPath}`);
+                }
+                configData = fs.readFileSync(configPath, 'utf-8');
+                console.log('Using configuration from file');
             }
-            configData = fs.readFileSync(configPath, 'utf-8');
 
             // Generate domain data from props
             domainData = generateDomainYaml(
                 trainingData.domainIntents || trainingData.intents.map(i => i.name),
                 trainingData.responses,
                 trainingData.actions,
-                trainingData.slots
+                trainingData.slots,
+                trainingData.sessionConfig
             );
 
             // Generate NLU data from props
@@ -50,11 +61,11 @@ const trainRasaModel = async (trainingData = null) => {
             console.log('No training data provided, using files from disk');
 
             // Define paths to YAML configuration files
-            const configPath = path.join(__dirname, '../../config.yml');
-            const domainPath = path.join(__dirname, '../../domain.yml');
-            const nluPath = path.join(__dirname, '../../data/nlu.yml');
-            const storiesPath = path.join(__dirname, '../../data/stories.yml');
-            const rulesPath = path.join(__dirname, '../../data/rules.yml');
+            const configPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/config.yml');
+            const domainPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/domain.yml');
+            const nluPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/data/nlu.yml');
+            const storiesPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/data/stories.yml');
+            const rulesPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/data/rules.yml');
 
             // Check if all required files exist
             const requiredFiles = [
@@ -82,7 +93,7 @@ const trainRasaModel = async (trainingData = null) => {
         console.log('All training data prepared successfully');
 
         // Ensure models directory exists
-        const modelsDir = path.join(__dirname, '../../models');
+        const modelsDir = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/models');
         if (!fs.existsSync(modelsDir)) {
             fs.mkdirSync(modelsDir, { recursive: true });
             console.log(`Created models directory at ${modelsDir}`);
@@ -148,9 +159,27 @@ const trainRasaModel = async (trainingData = null) => {
 };
 
 /**
+ * Generate config YAML content from configuration data
+ */
+function generateConfigYaml(configData) {
+    const configObj = {
+        recipe: configData.recipe || 'default.v1',
+        language: configData.language || 'id',
+        pipeline: configData.pipeline || [],
+        policies: configData.policies || []
+    };
+
+    if (configData.assistant_id) {
+        configObj.assistant_id = configData.assistant_id;
+    }
+
+    return yaml.dump(configObj);
+}
+
+/**
  * Generate domain YAML content from training data
  */
-function generateDomainYaml(intents, responses, actions, slots) {
+function generateDomainYaml(intents, responses, actions, slots, sessionConfig) {
     const domainObj = {
         version: '3.1',
         intents: intents || [],
@@ -161,6 +190,16 @@ function generateDomainYaml(intents, responses, actions, slots) {
         actions: actions || [],
         slots: slots || {}
     };
+
+    // Add session configuration if provided
+    if (sessionConfig) {
+        domainObj.session_config = {
+            session_expiration_time: sessionConfig.session_expiration_time || 60,
+            carry_over_slots_to_new_session:
+                sessionConfig.carry_over_slots_to_new_session !== undefined ?
+                    sessionConfig.carry_over_slots_to_new_session : true
+        };
+    }
 
     return `version: "3.1"
 intents:
@@ -210,6 +249,10 @@ ${Object.entries(slots).map(([name, config]) => {
         }
         return result;
     }).join('\n')}` : ''}
+
+${sessionConfig ? `session_config:
+  session_expiration_time: ${sessionConfig.session_expiration_time || 60}
+  carry_over_slots_to_new_session: ${sessionConfig.carry_over_slots_to_new_session !== undefined ? sessionConfig.carry_over_slots_to_new_session : true}` : ''}
 `;
 }
 
@@ -261,7 +304,7 @@ const loadRasaModel = async (modelName) => {
     try {
         console.log(`Loading model ${modelName} into Rasa server`);
 
-        const modelPath = path.join(__dirname, '../../models', modelName);
+        const modelPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/models', modelName);
 
         if (!fs.existsSync(modelPath)) {
             throw new Error(`Model file ${modelName} not found at ${modelPath}`);

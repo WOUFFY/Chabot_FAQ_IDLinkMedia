@@ -3,29 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Intents - Chatbot API Client</title>
+    <title>Configuration - Chatbot API Client</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
     <div class="tabs">
         <a href="index.html"><button>Home</button></a>
-        <a href="intents.html"><button class="active">Intents</button></a>
+        <a href="intents.html"><button>Intents</button></a>
         <a href="stories.html"><button>Stories</button></a>
         <a href="rules.html"><button>Rules</button></a>
-        <!-- <a href="rule_steps.html"><button>Rule Steps</button></a> -->
         <a href="intent_examples.html"><button>Intent Examples</button></a>
         <a href="story_steps.html"><button>Story Steps</button></a>
         <a href="train.html"><button>Train</button></a>
         <a href="domain.html"><button>Domain</button></a>
-        <a href="config.html"><button>Configuration</button></a>
+        <a href="config.html"><button class="active">Configuration</button></a>
     </div>
     <div id="content"></div>
 
     <script src="./js/apiClient.js"></script>
-    <script src="./js/modules/intents.js"></script>
+    <script src="./js/modules/config.js"></script>
     <script>
-        window.onload = function () { renderIntents(); }
+        window.onload = function () { showTab('config'); }
     </script>
 </body>
 

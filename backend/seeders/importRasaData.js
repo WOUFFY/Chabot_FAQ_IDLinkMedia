@@ -16,7 +16,8 @@ const {
     DomainIntent,
     DomainResponse,
     ResponseTemplate,
-    SessionConfig
+    SessionConfig,
+    Config
 } = db;
 
 // Path to Rasa data files - adjust these paths as needed
@@ -25,6 +26,7 @@ const NLU_PATH = path.join(RASA_PROJECT_PATH, 'data/nlu.yml');
 const STORIES_PATH = path.join(RASA_PROJECT_PATH, 'data/stories.yml');
 const RULES_PATH = path.join(RASA_PROJECT_PATH, 'data/rules.yml');
 const DOMAIN_PATH = path.join(RASA_PROJECT_PATH, 'domain.yml');
+const CONFIG_PATH = path.join(RASA_PROJECT_PATH, 'config.yml');
 
 /**
  * Import NLU data (intents and examples)
@@ -330,6 +332,68 @@ async function importDomainData() {
 }
 
 /**
+ * Import Config data from config.yml
+ */
+async function importConfigData() {
+    try {
+        console.log('Importing Config data...');
+
+        if (!fs.existsSync(CONFIG_PATH)) {
+            console.error(`Config file not found at: ${CONFIG_PATH}`);
+            return;
+        }
+
+        const configContent = fs.readFileSync(CONFIG_PATH, 'utf8');
+        const configData = yaml.load(configContent);
+
+        console.log('Config data loaded from YAML');
+
+        // Check if Config model exists
+        if (!Config) {
+            console.error('Config model not available in database models');
+            return;
+        }
+
+        // Create or update the config entry in the database
+        const [config, created] = await Config.findOrCreate({
+            where: { name: 'default' },
+            defaults: {
+                recipe: configData.recipe || 'default.v1',
+                assistant_id: configData.assistant_id,
+                language: configData.language || 'id',
+                pipeline: configData.pipeline || [],
+                policies: configData.policies || [],
+                isActive: true
+            }
+        });
+
+        if (!created) {
+            await config.update({
+                recipe: configData.recipe || config.recipe,
+                assistant_id: configData.assistant_id || config.assistant_id,
+                language: configData.language || config.language,
+                pipeline: configData.pipeline || config.pipeline,
+                policies: configData.policies || config.policies,
+                isActive: true
+            });
+            console.log('Updated existing config');
+        } else {
+            console.log('Created new config');
+        }
+
+        console.log('Config data import completed successfully');
+        console.log(`Recipe: ${configData.recipe}`);
+        console.log(`Language: ${configData.language}`);
+        console.log(`Pipeline items: ${configData.pipeline?.length || 0}`);
+        console.log(`Policy items: ${configData.policies?.length || 0}`);
+
+    } catch (error) {
+        console.error('Error importing Config data:', error);
+        throw error;
+    }
+}
+
+/**
  * Main import function to synchronize all data
  */
 async function importAllData() {
@@ -339,12 +403,14 @@ async function importAllData() {
         console.log('Stories path:', STORIES_PATH);
         console.log('Rules path:', RULES_PATH);
         console.log('Domain path:', DOMAIN_PATH);
+        console.log('Config path:', CONFIG_PATH);
 
         // Import data in sequence
         await importNluData();
         await importStoriesData();
         await importRulesData();
         await importDomainData();
+        await importConfigData(); // Added config import
 
         console.log('All data imported successfully!');
         process.exit(0);

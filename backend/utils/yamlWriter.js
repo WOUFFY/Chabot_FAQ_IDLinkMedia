@@ -19,6 +19,7 @@ const ensureDirectoryExists = (dirPath) => {
  * @returns {Object} - Paths of the written files
  */
 const writeYAMLFiles = async ({
+    config = null,
     intents,
     domainIntents = [],
     responses = [],
@@ -33,12 +34,49 @@ const writeYAMLFiles = async ({
     // Define paths - use the existing data folder
     const dataDir = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/data');
     const domainPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/domain.yml');
+    const configPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/config.yml');
     const nluPath = path.join(dataDir, 'nlu.yml');
     const storiesPath = path.join(dataDir, 'stories.yml');
     const rulesPath = path.join(dataDir, 'rules.yml');
 
     // Ensure data directory exists
     ensureDirectoryExists(dataDir);
+
+    // Write config.yml if provided
+    if (config) {
+        console.log('Writing config.yml');
+        const configContent = {
+            recipe: config.recipe || 'default.v1',
+            language: config.language || 'id'
+        };
+
+        // Add additional fields if they exist
+        if (config.assistant_id) {
+            configContent.assistant_id = config.assistant_id;
+        }
+
+        if (Array.isArray(config.pipeline) && config.pipeline.length > 0) {
+            configContent.pipeline = config.pipeline;
+        }
+
+        if (Array.isArray(config.policies) && config.policies.length > 0) {
+            configContent.policies = config.policies;
+        }
+
+        // Write config YAML with nice formatting
+        const configYAML = yaml.dump(configContent, { lineWidth: -1, indent: 2 });
+
+        // Add line breaks between sections for better readability
+        const formattedConfigYAML = configYAML
+            .replace(/^(recipe: .*)$/m, '$1\n')
+            .replace(/^(language: .*)$/m, '$1\n')
+            .replace(/^(assistant_id: .*)$/m, '$1\n')
+            .replace(/^(pipeline:)$/m, '$1\n')
+            .replace(/^(policies:)$/m, '$1\n');
+
+        fs.writeFileSync(configPath, formattedConfigYAML);
+        console.log(`Config file written to ${configPath}`);
+    }
 
     // Write domain.yml
     console.log('Writing domain.yml');
@@ -51,6 +89,16 @@ const writeYAMLFiles = async ({
         }, {})
     };
 
+    // Add actions if provided
+    if (actions && actions.length > 0) {
+        domainContent.actions = actions;
+    }
+
+    // Add slots if provided
+    if (slots && Object.keys(slots).length > 0) {
+        domainContent.slots = slots;
+    }
+
     // Generate YAML without session_config first
     let domainYAML = yaml.dump(domainContent, { lineWidth: -1, indent: 2 });
 
@@ -58,7 +106,16 @@ const writeYAMLFiles = async ({
     domainYAML = domainYAML
         .replace(/^(version: .*)$/m, '$1\n')
         .replace(/^(intents:([\s\S]*?))(?=responses:)/m, '$1\n')
-        .replace(/^(responses:([\s\S]*?))(?=actions:)/m, '$1\n')
+        .replace(/^(responses:([\s\S]*?))(?=actions:)/m, '$1\n');
+
+    // Add additional spacing between sections if they exist
+    if (actions && actions.length > 0) {
+        domainYAML = domainYAML.replace(/^(actions:([\s\S]*?))(?=slots:|$)/m, '$1\n');
+    }
+
+    if (slots && Object.keys(slots).length > 0) {
+        domainYAML = domainYAML.replace(/^(slots:([\s\S]*?))(?=$)/m, '$1\n');
+    }
 
     // Add session_config with proper spacing manually
     if (sessionConfig) {
@@ -74,7 +131,7 @@ const writeYAMLFiles = async ({
     // Write nlu.yml with the original format
     console.log('Writing nlu.yml');
     const nluYaml = `version: "3.1"\nnlu:\n${intents.map(intent => (
-        `- intent: ${intent.name}\n  examples: |\n    ${intent.examples.map(e => `${e}`).join('\n    ')}`
+        `- intent: ${intent.name}\n  examples: |\n    ${intent.examples.map(e => `- ${e}`).join('\n    ')}`
     )).join('\n\n')}`;
 
     fs.writeFileSync(nluPath, nluYaml);
@@ -107,6 +164,7 @@ const writeYAMLFiles = async ({
 
     // Return the paths of created files
     return {
+        configPath: config ? configPath : null,
         domainPath,
         nluPath,
         storiesPath,

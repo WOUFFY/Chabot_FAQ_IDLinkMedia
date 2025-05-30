@@ -10,6 +10,7 @@ function showTab(tab) {
         case 'story-steps': renderStorySteps(); break;
         case 'train': renderTrain(); break;
         case 'domain': renderDomain(); break;
+        case 'config': renderConfig(); break;
     }
 }
 
@@ -36,5 +37,6 @@ document.head.insertAdjacentHTML('beforeend', `
     else if (path.includes('story_steps.html')) showTab('story-steps');
     else if (path.includes('train.html')) showTab('train');
     else if (path.includes('domain.html')) showTab('domain');
+    else if (path.includes('config.html')) showTab('config');
     else showTab('intents'); // Default
 })();

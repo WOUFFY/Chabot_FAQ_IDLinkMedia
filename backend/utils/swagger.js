@@ -98,6 +98,94 @@ const swaggerOptions = {
                         updatedAt: { type: 'string', format: 'date-time' }
                     }
                 },
+                Config: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'integer' },
+                        name: { type: 'string' },
+                        recipe: { type: 'string' },
+                        assistant_id: { type: 'string' },
+                        language: { type: 'string' },
+                        pipeline: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                additionalProperties: true
+                            }
+                        },
+                        policies: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                additionalProperties: true
+                            }
+                        },
+                        isActive: { type: 'boolean' },
+                        createdAt: { type: 'string', format: 'date-time' },
+                        updatedAt: { type: 'string', format: 'date-time' }
+                    }
+                },
+                ConfigUpdate: {
+                    type: 'object',
+                    required: ['recipe', 'language'],
+                    properties: {
+                        recipe: { type: 'string', description: 'Configuration recipe name' },
+                        assistant_id: { type: 'string', description: 'Assistant unique identifier' },
+                        language: { type: 'string', description: 'Language code (e.g., "id", "en")' },
+                        pipeline: {
+                            type: 'array',
+                            description: 'NLU pipeline components',
+                            items: {
+                                type: 'object',
+                                additionalProperties: true
+                            }
+                        },
+                        policies: {
+                            type: 'array',
+                            description: 'Dialogue policies',
+                            items: {
+                                type: 'object',
+                                additionalProperties: true
+                            }
+                        }
+                    }
+                },
+                SessionConfig: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'integer' },
+                        session_expiration_time: { type: 'integer' },
+                        carry_over_slots_to_new_session: { type: 'boolean' },
+                        createdAt: { type: 'string', format: 'date-time' },
+                        updatedAt: { type: 'string', format: 'date-time' }
+                    }
+                },
+                TrainingStatus: {
+                    type: 'object',
+                    properties: {
+                        message: { type: 'string' },
+                        model: { type: 'string' },
+                        loadResult: {
+                            type: 'object',
+                            additionalProperties: true
+                        },
+                        stats: {
+                            type: 'object',
+                            properties: {
+                                intents: { type: 'integer' },
+                                domainIntents: { type: 'integer' },
+                                responses: { type: 'integer' },
+                                actions: { type: 'integer' },
+                                slots: { type: 'integer' },
+                                stories: { type: 'integer' },
+                                rules: { type: 'integer' }
+                            }
+                        },
+                        sessionConfig: {
+                            $ref: '#/components/schemas/SessionConfig'
+                        }
+                    }
+                },
                 Error: {
                     type: 'object',
                     properties: {

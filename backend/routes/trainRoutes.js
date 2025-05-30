@@ -48,6 +48,51 @@ router.post('/train', async (req, res) => {
         const Rule = getModelSafely('Rule');
         const RuleStep = getModelSafely('RuleStep');
         const SessionConfig = getModelSafely('SessionConfig');
+        const Config = getModelSafely('Config');
+
+        // Get active configuration
+        let configData = {
+            recipe: 'default.v1',
+            language: 'id',
+            pipeline: [],
+            policies: []
+        };
+
+        if (Config) {
+            try {
+                // Try to get active config
+                const activeConfig = await Config.findOne({ where: { isActive: true } });
+                if (activeConfig) {
+                    configData = {
+                        recipe: activeConfig.recipe,
+                        assistant_id: activeConfig.assistant_id,
+                        language: activeConfig.language,
+                        pipeline: activeConfig.pipeline,
+                        policies: activeConfig.policies
+                    };
+                    console.log(`Loaded active config: ${activeConfig.name}, language: ${activeConfig.language}`);
+                } else {
+                    // Try to get default config
+                    const defaultConfig = await Config.findOne({ where: { name: 'default' } });
+                    if (defaultConfig) {
+                        configData = {
+                            recipe: defaultConfig.recipe,
+                            assistant_id: defaultConfig.assistant_id,
+                            language: defaultConfig.language,
+                            pipeline: defaultConfig.pipeline,
+                            policies: defaultConfig.policies
+                        };
+                        console.log(`No active config found, using default config: ${defaultConfig.name}`);
+                    } else {
+                        console.log('No config found, using system defaults');
+                    }
+                }
+            } catch (error) {
+                console.warn('Error loading configuration:', error.message);
+            }
+        } else {
+            console.log('Config model not found, using default configuration');
+        }
 
         // Load data, safely handling missing models
         const intents = Intent ? await safelyGetData('Intent', IntentExample) : [];
@@ -154,6 +199,7 @@ router.post('/train', async (req, res) => {
 
         // Generate YAML files from transformed data
         const trainingData = {
+            config: configData,
             intents: transformedIntents,
             domainIntents: transformedDomainIntents,
             responses: transformedResponses,
@@ -190,6 +236,7 @@ router.post('/train', async (req, res) => {
                 stories: stories.length,
                 rules: rules.length
             },
+            config: configData,
             sessionConfig
         });
     } catch (err) {
@@ -233,6 +280,51 @@ router.post('/generate-yaml', async (req, res) => {
         const Rule = getModelSafely('Rule');
         const RuleStep = getModelSafely('RuleStep');
         const SessionConfig = getModelSafely('SessionConfig');
+        const Config = getModelSafely('Config');
+
+        // Get active configuration
+        let configData = {
+            recipe: 'default.v1',
+            language: 'id',
+            pipeline: [],
+            policies: []
+        };
+
+        if (Config) {
+            try {
+                // Try to get active config
+                const activeConfig = await Config.findOne({ where: { isActive: true } });
+                if (activeConfig) {
+                    configData = {
+                        recipe: activeConfig.recipe,
+                        assistant_id: activeConfig.assistant_id,
+                        language: activeConfig.language,
+                        pipeline: activeConfig.pipeline,
+                        policies: activeConfig.policies
+                    };
+                    console.log(`Loaded active config: ${activeConfig.name}, language: ${activeConfig.language}`);
+                } else {
+                    // Try to get default config
+                    const defaultConfig = await Config.findOne({ where: { name: 'default' } });
+                    if (defaultConfig) {
+                        configData = {
+                            recipe: defaultConfig.recipe,
+                            assistant_id: defaultConfig.assistant_id,
+                            language: defaultConfig.language,
+                            pipeline: defaultConfig.pipeline,
+                            policies: defaultConfig.policies
+                        };
+                        console.log(`No active config found, using default config: ${defaultConfig.name}`);
+                    } else {
+                        console.log('No config found, using system defaults');
+                    }
+                }
+            } catch (error) {
+                console.warn('Error loading configuration:', error.message);
+            }
+        } else {
+            console.log('Config model not found, using default configuration');
+        }
 
         // Load data, safely handling missing models
         const intents = Intent ? await safelyGetData('Intent', IntentExample) : [];
@@ -339,6 +431,7 @@ router.post('/generate-yaml', async (req, res) => {
 
         // Generate YAML files from transformed data
         const yamlFiles = await writeYAMLFiles({
+            config: configData,
             intents: transformedIntents,
             domainIntents: transformedDomainIntents,
             responses: transformedResponses,
@@ -362,6 +455,7 @@ router.post('/generate-yaml', async (req, res) => {
                 stories: stories.length,
                 rules: rules.length
             },
+            config: configData,
             sessionConfig
         });
     } catch (err) {
@@ -379,7 +473,7 @@ router.post('/generate-yaml', async (req, res) => {
  * /api/extract-from-yaml:
  *   post:
  *     summary: Extract configuration from existing YAML files
- *     description: Reads existing domain.yml and populates the database with its contents
+ *     description: Reads existing domain.yml, config.yml and other YAML files to populate the database
  *     tags: [Training]
  *     responses:
  *       200:
@@ -397,6 +491,7 @@ router.post('/extract-from-yaml', async (req, res) => {
 
         const domainPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/domain.yml');
         const nluPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/data/nlu.yml');
+        const configPath = path.join(__dirname, '../../Chabot_FAQ_IDLinkMedia/config.yml');
 
         if (!fs.existsSync(domainPath)) {
             throw new Error(`Domain file not found at ${domainPath}`);
@@ -406,20 +501,63 @@ router.post('/extract-from-yaml', async (req, res) => {
         const domainContent = yaml.load(fs.readFileSync(domainPath, 'utf8'));
         console.log('Domain file loaded successfully');
 
+        // Load config.yml if it exists
+        let configContent = null;
+        if (fs.existsSync(configPath)) {
+            configContent = yaml.load(fs.readFileSync(configPath, 'utf8'));
+            console.log('Config file loaded successfully');
+        }
+
         // Get models safely
         const DomainIntent = getModelSafely('DomainIntent');
         const DomainResponse = getModelSafely('DomainResponse');
         const ResponseTemplate = getModelSafely('ResponseTemplate');
         const Intent = getModelSafely('Intent');
         const IntentExample = getModelSafely('IntentExample');
+        const Config = getModelSafely('Config');
 
         let stats = {
             intentsCreated: 0,
             examplesCreated: 0,
             domainIntentsCreated: 0,
             responsesCreated: 0,
-            templatesCreated: 0
+            templatesCreated: 0,
+            configCreated: 0
         };
+
+        // Process config if found
+        if (configContent && Config) {
+            try {
+                const [config, created] = await Config.findOrCreate({
+                    where: { name: 'default' },
+                    defaults: {
+                        recipe: configContent.recipe || 'default.v1',
+                        assistant_id: configContent.assistant_id,
+                        language: configContent.language || 'id',
+                        pipeline: configContent.pipeline || [],
+                        policies: configContent.policies || [],
+                        isActive: true
+                    }
+                });
+
+                if (!created) {
+                    await config.update({
+                        recipe: configContent.recipe || config.recipe,
+                        assistant_id: configContent.assistant_id || config.assistant_id,
+                        language: configContent.language || config.language,
+                        pipeline: configContent.pipeline || config.pipeline,
+                        policies: configContent.policies || config.policies,
+                        isActive: true
+                    });
+                    console.log('Updated existing config');
+                } else {
+                    console.log('Created new config');
+                    stats.configCreated = 1;
+                }
+            } catch (configError) {
+                console.warn('Error processing config:', configError.message);
+            }
+        }
 
         // Process intents
         if (domainContent.intents && DomainIntent) {
